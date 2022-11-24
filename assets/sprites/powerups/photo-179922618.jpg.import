@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/photo-179922618.jpg-74a8b119dbeafc67a4074ab81e4482fd.stex"
+path="res://.import/photo-179922618.jpg-2ba884d8680d3a594559da8529a48f3f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/photo-179922618.jpg"
-dest_files=[ "res://.import/photo-179922618.jpg-74a8b119dbeafc67a4074ab81e4482fd.stex" ]
+source_file="res://assets/sprites/powerups/photo-179922618.jpg"
+dest_files=[ "res://.import/photo-179922618.jpg-2ba884d8680d3a594559da8529a48f3f.stex" ]
 
 [params]
 
