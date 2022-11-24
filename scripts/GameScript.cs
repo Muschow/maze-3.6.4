@@ -38,6 +38,7 @@ public class GameScript : Node2D
             mazeContainer.GetChild(0).QueueFree(); //get and delete the first child of the MazeContainer node. The first child will be the oldest Maze node instance
             mazesOnTheScreen--;
             GD.Print("removed maze!");
+            //lkjfhsdjfhsdljfhks
         }
         //PrintTreePretty(); //debug, remove later
 
