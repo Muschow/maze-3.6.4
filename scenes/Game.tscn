@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/Pacman.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/MazeContainer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scripts/GameScript.cs" type="Script" id=3]
 [ext_resource path="res://assets/fonts/myDynamicFont.tres" type="DynamicFont" id=4]
 [ext_resource path="res://scenes/InventoryItem.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/KillWall.tscn" type="PackedScene" id=6]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 3 )
@@ -15,6 +16,8 @@ collision_layer = 1
 collision_mask = 1
 
 [node name="MazeContainer" parent="." instance=ExtResource( 2 )]
+
+[node name="KillWall" parent="." instance=ExtResource( 6 )]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -82,3 +85,6 @@ anchor_bottom = 0.0
 margin_left = 714.0
 margin_right = 734.0
 margin_bottom = 26.0
+
+[node name="DebugCamera(check current)" type="Camera2D" parent="."]
+zoom = Vector2( 5, 5 )

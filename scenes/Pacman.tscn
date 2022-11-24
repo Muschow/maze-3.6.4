@@ -25,6 +25,7 @@ lives = 3
 [node name="AnimatedSprite" parent="." index="0"]
 frames = SubResource( 1 )
 animation = "walk"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" parent="." index="1"]
@@ -46,7 +47,7 @@ editor_draw_drag_margin = true
 [node name="RayCasts" parent="." index="3" instance=ExtResource( 6 )]
 
 [node name="PacmanArea" type="Area2D" parent="." index="4"]
-collision_mask = 20
+collision_mask = 84
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PacmanArea" index="0"]
 shape = ExtResource( 7 )

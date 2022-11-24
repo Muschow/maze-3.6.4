@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj": {}
+    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj": {
+    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj",
+        "projectUniqueName": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj",
         "projectName": "Maze test 2 - Stack",
-        "projectPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj",
+        "projectPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj",
         "packagesPath": "C:\\Users\\mchow\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.4\\.mono\\temp\\obj\\",
+        "outputPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\.mono\\temp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mchow\\AppData\\Roaming\\NuGet\\NuGet.Config",

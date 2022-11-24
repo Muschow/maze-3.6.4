@@ -232,7 +232,7 @@ public class Movement : Node
         }
 
         Vector2 current = target;
-        while (current != source)
+        while (previous.ContainsKey(current))
         {
             pathList.Add(current);
             current = previous[current];

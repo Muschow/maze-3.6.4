@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/path.png" type="Texture" id=1]
+[ext_resource path="res://scripts/KillWallScript.cs" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 16, 16 )
+
+[node name="KillWall" type="Sprite"]
+modulate = Color( 1, 0, 0, 1 )
+position = Vector2( 1, 16 )
+z_index = 4
+texture = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="KillArea" type="Area2D" parent="."]
+collision_layer = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillArea"]
+shape = SubResource( 1 )

@@ -72,6 +72,12 @@ public class PacmanScript : CharacterScript
             CallDeferred("EnableInvincibility", 3);
         }
 
+        if (area.Name == "KillArea")
+        {
+            GD.Print("pacman hit killwall, game over");
+            //Call GameOver() function
+        }
+
 
     }
 
