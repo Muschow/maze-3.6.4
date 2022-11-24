@@ -1,0 +1,9 @@
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\bin\Debug\Maze test 2 - Stack.dll
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\bin\Debug\Maze test 2 - Stack.pdb
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.csproj.AssemblyReference.cache
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.AssemblyInfoInputs.cache
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.AssemblyInfo.cs
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.csproj.CoreCompileInputs.cache
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.dll
+C:\Users\016797\Documents\GodotProjects\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.pdb
