@@ -13,9 +13,11 @@ public class GhostScript : CharacterScript
     private List<Vector2> paths;
     protected PacmanScript pacman;
     private TileMap nodeTilemap;
-    //private int Gspeed = 100; //maybe just have a constructor with speed = 100 instead of this Gspeed crap
+    private Globals globals;
+    private GameScript game;
     private int pathCounter = 0;
     private bool recalculate = false; //used for ghostchase and timer timeout
+    private int baseScore = 500;
     Vector2 movementV;
     protected Timer chaseTimer;
     protected Timer patrolTimer;
@@ -25,6 +27,7 @@ public class GhostScript : CharacterScript
     protected Vector2 target;
     protected Vector2 source;
     protected AnimatedSprite ghostBody;
+    protected AnimatedSprite ghostEyes;
     protected Color ghostColour = Colors.White;
     protected enum states
     {
@@ -42,9 +45,53 @@ public class GhostScript : CharacterScript
     }
     protected algo searchingAlgo = algo.dijkstras;
 
+
+    //As GhostScript is a base class, it will not be in the scene tree.
+    // Called when the node enters the scene tree for the first time.
+
+    public override void _Ready()
+    {
+        GD.Print("ghostscript ready");
+
+        mazeTm = GetParent().GetParent().GetNode<MazeGenerator>("MazeTilemap");
+        nodeTilemap = GetParent().GetParent().GetNode<TileMap>("NodeTilemap");
+        pacman = GetNode<PacmanScript>("/root/Game/Pacman");
+        globals = GetNode<Globals>("/root/Globals");
+        game = GetNode<GameScript>("/root/Game");
+
+        resetChasePathTimer = GetNode<Timer>("ResetChasePath");
+        chaseTimer = GetNode<Timer>("ChaseTimer");
+        patrolTimer = GetNode<Timer>("PatrolTimer");
+        vulnerableTimer = GetNode<Timer>("VulnerableTimer");
+        ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
+        ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
+
+        moveScr.adjList = mazeTm.adjacencyList;
+        moveScr.nodeList = mazeTm.nodeList;
+
+        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * 32 + new Vector2(16, 16); //spawn ghost on top left of current maze
+        ghostBody.Modulate = ghostColour;
+
+        FindNewPath(source, target);
+        EnterState(ghostState); //initialise first ghostState (patrol);
+
+        //connect powerup signals, if theres a bunch on these put it in a function and then sort things out later
+        globals.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
+
+    }
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(float delta)
+    {
+        UpdateSourceTarget();
+
+        PlayAndPauseAnim(movementV);
+        ProcessStates(delta);
+        //GD.Print("ghostspeed", speed);
+
+    }
     protected override void MoveAnimManager(Vector2 masVector)
     {
-        AnimatedSprite ghostEyes = GetNode<AnimatedSprite>("GhostEyes"); //not sure whether to put it in here for readabillity or in each ready so theres less calls
+
 
         masVector = masVector.Normalized().Round();
 
@@ -67,50 +114,23 @@ public class GhostScript : CharacterScript
             ghostEyes.Play("left");
         }
     }
-    //As GhostScript is a base class, it will not be in the scene tree.
-    // Called when the node enters the scene tree for the first time.
-
-    public override void _Ready()
+    private void EnterState(states newGhostState)
     {
-        GD.Print("ghostscript ready");
-
-        mazeTm = GetParent().GetParent().GetNode<MazeGenerator>("MazeTilemap");
-        nodeTilemap = GetParent().GetParent().GetNode<TileMap>("NodeTilemap");
-        pacman = GetNode<PacmanScript>("/root/Game/Pacman");
-
-        resetChasePathTimer = GetNode<Timer>("ResetChasePath");
-        chaseTimer = GetNode<Timer>("ChaseTimer");
-        patrolTimer = GetNode<Timer>("PatrolTimer");
-        vulnerableTimer = GetNode<Timer>("VulnerableTimer");
-        ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
-
-        //turns out i CAN actually just use a list and adjacency list... ffs
-        moveScr.adjList = mazeTm.adjacencyList;
-        moveScr.nodeList = mazeTm.nodeList;
-
-        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * 32 + new Vector2(16, 16); //spawn ghost on top left of current maze
-        ghostBody.Modulate = ghostColour;
-
-        FindNewPath(source, target);
-        EnterState(ghostState); //initialise first ghostState (patrol);
-    }
-
-    private states EnterState(states ghostState)
-    {
-        if (ghostState == states.patrol)
+        if (newGhostState == states.patrol)
         {
             patrolTimer.Start((float)GD.RandRange(7, 20));
         }
-        else if (ghostState == states.chase)
+        else if (newGhostState == states.chase)
         {
             chaseTimer.Start((float)GD.RandRange(10, 30));
         }
-        else if (ghostState == states.vulnerable)
+        else if (newGhostState == states.vulnerable)
         {
             vulnerableTimer.Start(15);
+            GD.Print("entered vulnerable state");
         }
 
-        return ghostState;
+        ghostState = newGhostState;
     }
 
     private void _OnResetChasePathTimeout() //recalculates pathfinding when timer timeouts
@@ -120,19 +140,23 @@ public class GhostScript : CharacterScript
 
     private void _OnChaseTimerTimeout()
     {
-        ghostState = EnterState(states.patrol); //has to be in here as this is called once and not every frame
+        EnterState(states.patrol); //has to be in here as this is called once and not every frame
     }
 
     private void _OnPatrolTimerTimeout()
     {
-        ghostState = EnterState(states.chase);
+        EnterState(states.chase);
 
     }
 
     private void _OnVulnerableTimerTimeout()
     {
         patrolTimer.Paused = false;
-        ghostState = EnterState(states.patrol);
+        ghostBody.Modulate = ghostColour;
+        ghostBody.Play("walk");
+        ghostEyes.Visible = true;
+
+        EnterState(states.patrol);
 
     }
 
@@ -270,7 +294,6 @@ public class GhostScript : CharacterScript
 
     private void GhostPatrol(float delta)
     {
-
         //GD.Print(patrolTimer.WaitTime);
 
         if (pathCounter < paths.Count)
@@ -288,9 +311,17 @@ public class GhostScript : CharacterScript
 
     private void GhostVulnerable(float delta)
     {
+        chaseTimer.Stop();          //stop chase and patrol timer just in case
+        patrolTimer.Stop();
+        //patrolTimer.Paused = true; //pauses patrol timer as scatter uses patrol mode for pathfinding
 
-        GhostPatrol(delta);
+        GD.Print("VULNERABLE STATE");
+        ghostBody.Modulate = Colors.White;
+        ghostEyes.Visible = false;
+
         ghostBody.Play("vulnerable");
+        GhostPatrol(delta);
+
         //if ghost collides with pacman, kill ghost, give pacman like 100 points and increase multiplier
 
         //on leaving scatter, play the normal one again. On ready, play the normal one to intitialise.
@@ -310,12 +341,11 @@ public class GhostScript : CharacterScript
         }
         else if (ghostState == states.vulnerable)
         {
-            //GD.Print("VULNERABLE STATE-----------------------------------------");
-            chaseTimer.Stop();          //stop chase and patrol timer just in case
-            patrolTimer.Stop();
-            patrolTimer.Paused = true; //pauses patrol timer as scatter uses patrol mode for pathfinding
-
             GhostVulnerable(delta);
+            //GD.Print("VULNERABLE STATE-----------------------------------------");
+
+
+
         }
     }
 
@@ -336,6 +366,12 @@ public class GhostScript : CharacterScript
             speed = speed + (int)GD.RandRange(-20, 20);
         }
         hasIntersectedBefore = true;
+
+        if ((area.Name == "PacmanArea") && (ghostState == states.vulnerable))
+        {
+            game.score += (int)(baseScore * game.scoreMultiplier); //add 100*mult to gamescript.score
+            QueueFree();
+        }
     }
 
     public void _OnGhostAreaExited(Area2D area) //when 2 ghosts are not ontop of each other reset speed back to normal.
@@ -345,15 +381,11 @@ public class GhostScript : CharacterScript
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta)
+    public void _OnPowerPelletActivated()
     {
-        UpdateSourceTarget();
-
-        PlayAndPauseAnim(movementV);
-        ProcessStates(delta);
-        //GD.Print("ghostspeed", speed);
-
+        EnterState(states.vulnerable);
+        pacman.EnableInvincibility(vulnerableTimer.TimeLeft);
     }
+
 }
 

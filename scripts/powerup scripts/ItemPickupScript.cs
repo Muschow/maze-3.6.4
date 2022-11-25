@@ -1,24 +1,15 @@
 using Godot;
 using System;
 
-public class ItemPickupScript : Sprite
+public abstract class ItemPickupScript : Sprite
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    //VERY IMPORTANT INSTRUCTIONS
-    //add itempickup to scene randomly to add powerups
-
-    //create an instance of every powerup
-    //have an array of all the powerups instances
-    //randomly select a powerup instnace from the array
-    //add that instance to the inventory
+    [Export] protected int baseScore = 100;
+    private GameScript game;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-
+        game = GetNode<GameScript>("/root/Game");
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -27,10 +18,13 @@ public class ItemPickupScript : Sprite
     //      
     //  }
 
-    public void _OnItemAreaEntered()
+
+    public void _OnItemAreaEntered(Area area)
     {
-        //add to inventory if it can
-        //if it cant add to inventory then add ammo or add score
-        //QueueFree
+        game.score += (int)(baseScore * game.scoreMultiplier);
+        ItemAbility();
+        QueueFree();
     }
+
+    public abstract void ItemAbility();
 }

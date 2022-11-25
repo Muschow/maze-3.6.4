@@ -56,28 +56,28 @@ public class Movement : Node
         //make all the adjList stuff static and then do nodeList = MazeGenerator.nodeList
 
         //to reset my changes, make the ajList properties static and then replace mazeG.nodeList with MazeGenerator.nodeList
-        GD.Print("printing nodelist count in Movement...");
-        GD.Print(nodeList.Count);
+        //GD.Print("printing nodelist count in Movement...");
+        //GD.Print(nodeList.Count);
 
-        GD.Print("source " + source);
-        GD.Print("target " + target);
-        if (nodeList.Contains(target))
-        {
-            GD.Print("target is a node");
-        }
-        else
-        {
-            GD.Print("target is not a node");
-        }
+        //GD.Print("source " + source);
+        //GD.Print("target " + target);
+        // if (nodeList.Contains(target))
+        // {
+        //     GD.Print("target is a node");
+        // }
+        // else
+        // {
+        //     GD.Print("target is not a node");
+        // }
 
-        if (nodeList.Contains(source))
-        {
-            GD.Print("source is a node");
-        }
-        else
-        {
-            GD.Print("source is not a node");
-        }
+        // if (nodeList.Contains(source))
+        // {
+        //     GD.Print("source is a node");
+        // }
+        // else
+        // {
+        //     GD.Print("source is not a node");
+        // }
         //Have a method here that makes sure source and target are nice round Vectors and not decimals or something like that
         //Im thinking WorldToMap and then MapToWorld again
 
@@ -125,7 +125,7 @@ public class Movement : Node
                 //Gd.Print("curr = " + current);
                 //Gd.Print("target = " + target);
 
-                GD.Print("curr == target");
+                //GD.Print("curr == target");
                 while (previous.ContainsKey(current))
                 {
                     //Gd.Print("previous[current] " + previous[current]);
@@ -179,9 +179,14 @@ public class Movement : Node
         }
 
         if (Astar == false)
-            GD.Print("dijkstras complete, pathlist count " + pathList.Count);
+        {
+            //GD.Print("dijkstras complete, pathlist count " + pathList.Count);
+        }
         else
-            GD.Print("astar complete, pathlist count " + pathList.Count);
+        {
+            //GD.Print("astar complete, pathlist count " + pathList.Count);
+        }
+
 
         return pathList;
     }
@@ -240,7 +245,7 @@ public class Movement : Node
         pathList.Add(source);
         pathList.Reverse();
 
-        GD.Print("bfs complete, pathlist count " + pathList.Count);
+        //GD.Print("bfs complete, pathlist count " + pathList.Count);
 
         return pathList;
     }

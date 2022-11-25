@@ -8,6 +8,8 @@ public class MazeGenerator : TileMap
     [Export] public int height = 38; //was originally 19
     public int mazeOriginY = 0; //maybe make this or mazeStartLoc a global variable/static or something
     private int backtrackCount = 0;
+    private int numChildrenOfPowerupFactory;
+    private int numPowerupsToSpawn;
     private bool generationComplete = false;
 
     Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
@@ -24,21 +26,69 @@ public class MazeGenerator : TileMap
     //-------------------------------------------------End of Adjacency Matrix/List properties-----------------------------------------------------------
 
     //-------------------------------------------------------------GetNodes------------------------------------------------------------------------------
-
+    private Node2D powerupContainer;
+    private Node2D powerupFactory;
     private TileMap nodeTilemap;
     private GameScript gameScr;
     //----------------------------------------------------------End of GetNodes--------------------------------------------------------------------------
 
     //-----------------------------------------------------------PackedScenes---------------------------------------------------------------------------
     PackedScene pelletScene = GD.Load<PackedScene>("res://scenes/Pellet.tscn");
+    PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/PowerupFactory.tscn");
     //--------------------------------------------------------End of PackedScenes-----------------------------------------------------------------------
+    //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
+    //Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+        GD.Print("mazegen ready");
+        gameScr = GetNode<GameScript>("/root/Game");
+        nodeTilemap = GetParent().GetNode<TileMap>("NodeTilemap");
+        powerupContainer = GetParent().GetNode<Node2D>("PowerupContainer");
+        powerupFactory = (Node2D)powerupFactoryScene.Instance();
 
+        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout
+        //maybe this would work if it was static and we just deleted mazestartloc
+
+        GD.Randomize();
+        IterativeDFSInit();
+        //UpdateDirtyQuadrants(); //maybe get rid of this tbh, not sure if its doing anything. Supposed to force and update to the tilemap if tiles arent updating
+
+
+        //PrintNodeList();
+        GenerateAdjList();
+        //PrintAdjList(adjacencyList);
+        //Node2D powerupFactory = (Node2D)powerupFactoryScene.Instance();
+        numChildrenOfPowerupFactory = powerupFactory.GetChildCount();
+        numPowerupsToSpawn = (int)GD.RandRange(1, 10);
+
+        AddRandomPowerups();
+
+        GD.Print("nodeList Count: " + nodeList.Count);
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    // public override void _Process(float delta)
+    // {
+
+    // }
+
+    //-----------------------------------------------------------End of ready and process-----------------------------------------------------------
     //------------------------------------------------------Instancing Scenes Functions----------------------------------------------------------------
     private void AddPellet(Vector2 spawnPosition)
     {
         Sprite pelletInstance = (Sprite)pelletScene.Instance();
         GetParent().GetNode<Node2D>("PelletContainer").AddChild(pelletInstance);
         pelletInstance.Position = MapToWorld(spawnPosition) + new Vector2(16, 16);
+    }
+
+    private void AddRandomPowerups()
+    {
+        for (int i = 0; i < numPowerupsToSpawn; i++)
+        {
+            Sprite powerup = (Sprite)powerupFactory.GetChild((int)GD.RandRange(0, numChildrenOfPowerupFactory)).Duplicate();
+            powerupContainer.AddChild(powerup);
+            powerup.Position = SetSpawn();
+        }
     }
 
     //---------------------------------------------------End of instancing scene functions-------------------------------------------------------------
@@ -423,64 +473,32 @@ public class MazeGenerator : TileMap
 
     //--------------------------------------Other functions --------------------------------------------------------------------
 
-    public Vector2 SetSpawn(bool spawnPacman) //probably place this somewhere else or make global idk
+    private Vector2 SetSpawn() //probably place this somewhere else or make global idk
     {
-        int x = 0;
-        int y = 0;
-
         Random rnd = new Random();
-        if (spawnPacman)
+
+        int x = rnd.Next(1, width);
+        int y = mazeOriginY + rnd.Next(1, height - 2);
+
+        while (GetCell(x, y) == Globals.WALL)
         {
-            y = height - 2;
-            while ((GetCell(x, y) == Globals.WALL) || (((nodeTilemap.GetCell(x, y) != Globals.NODE))))
-            {
-                x = rnd.Next(1, width);
-            }
+            x = rnd.Next(1, width);
+            y = mazeOriginY + rnd.Next(1, height - 2);
         }
-        else
-        {
-            while (GetCell(x, y) == Globals.WALL)
-            {
-                x = rnd.Next(1, width);
-                y = rnd.Next(1, height - 2);
-            }
-        }
+
         Vector2 spawnLoc = new Vector2(x, y);
-        //GD.Print("spawn" + spawnLoc); //debug
+        GD.Print("spawn" + spawnLoc); //debug
 
-        spawnLoc = new Vector2((spawnLoc * CellSize) + (CellSize / 2));
+        spawnLoc = new Vector2(MapToWorld(spawnLoc) + Globals.halfCellSize);
 
-        //GD.Print("MTWspawnLoc: " + spawnLoc); //debug
+
+        GD.Print("MTWspawnLoc: " + spawnLoc); //debug
         return spawnLoc;
     }
 
+
+
     //--------------------------------------------End of Other Functions--------------------------------------------------------------
 
-    //Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-        GD.Print("mazegen ready");
-        gameScr = GetNode<GameScript>("/root/Game");
-        nodeTilemap = GetParent().GetNode<TileMap>("NodeTilemap");
 
-        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout
-        //maybe this would work if it was static and we just deleted mazestartloc
-
-        GD.Randomize();
-        IterativeDFSInit();
-        //UpdateDirtyQuadrants(); //maybe get rid of this tbh, not sure if its doing anything. Supposed to force and update to the tilemap if tiles arent updating
-
-
-        PrintNodeList();
-        GenerateAdjList();
-        PrintAdjList(adjacencyList);
-
-        GD.Print("nodeList Count: " + nodeList.Count);
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    // public override void _Process(float delta)
-    // {
-
-    // }
 }

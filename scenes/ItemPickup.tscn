@@ -11,7 +11,7 @@ z_index = 1
 script = ExtResource( 1 )
 
 [node name="ItemArea" type="Area2D" parent="."]
-collision_layer = 16
+collision_layer = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ItemArea"]
 shape = SubResource( 1 )

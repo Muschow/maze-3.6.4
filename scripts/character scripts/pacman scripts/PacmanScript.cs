@@ -65,7 +65,7 @@ public class PacmanScript : CharacterScript
     bool invincible = false;
     public void _OnPacmanAreaEntered(Area area) //do more stuff with this
     {
-        GD.Print(area.Name);
+        //GD.Print(area.Name);
         if (area.Name == "GhostArea" && !invincible)
         {
             lives--;
@@ -81,7 +81,7 @@ public class PacmanScript : CharacterScript
 
     }
 
-    private void EnableInvincibility(float time)
+    public void EnableInvincibility(float time)
     {
         invincible = true;
         GetNode<Timer>("PacmanArea/InvincibleTimer").Start(time);
