@@ -12,9 +12,9 @@ public class ClydeScript : GhostScript
     private KinematicBody2D firstGhost;
 
 
-    public override void UpdateSourceTarget()
+    public override void UpdateTarget()
     {
-        source = mazeTm.WorldToMap(Position);
+
 
         firstGhost = GetParent().GetChildOrNull<KinematicBody2D>(0);
         if (firstGhost == null)

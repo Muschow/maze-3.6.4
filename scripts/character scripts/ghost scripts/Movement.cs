@@ -105,7 +105,7 @@ public class Movement : Node
             unvisited.Add(nodeList[i]);
 
             // Setting the node distance to Infinity (or in this case 9999 lol)
-            distances.Add(nodeList[i], Globals.INFINITY);
+            distances.Add(nodeList[i], GameScript.INFINITY);
 
             //previous.Add(nodeList[i], Vector2.Zero);
         }

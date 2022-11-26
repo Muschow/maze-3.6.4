@@ -23,8 +23,8 @@ public class PowerPelletScript : ItemPickupScript
     public override void ItemAbility()
     {
         GD.Print("POWERPELLET EATEN");
-        //emitsignal change state to vunerable
-        GetNode<Globals>("/root/Globals").EmitSignal("PowerPelletActivated");
+        game.EmitSignal("PowerPelletActivated");
+        QueueFree();
 
     }
 

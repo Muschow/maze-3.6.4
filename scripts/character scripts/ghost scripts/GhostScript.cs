@@ -4,11 +4,7 @@ using System.Collections.Generic;
 
 public class GhostScript : CharacterScript
 {
-    public GhostScript()
-    {
-        //speed = 100 * Globals.gameSpeed;
-        speed = baseSpeed * (Globals.gameSpeed + 0.28f);
-    }
+
     private Movement moveScr = new Movement();
     private List<Vector2> paths;
     protected PacmanScript pacman;
@@ -25,6 +21,7 @@ public class GhostScript : CharacterScript
     protected Timer resetChasePathTimer;
 
     protected Vector2 target;
+    private bool defaultTarget = true;
     protected Vector2 source;
     protected AnimatedSprite ghostBody;
     protected AnimatedSprite ghostEyes;
@@ -76,27 +73,37 @@ public class GhostScript : CharacterScript
         EnterState(ghostState); //initialise first ghostState (patrol);
 
         //connect powerup signals, if theres a bunch on these put it in a function and then sort things out later
-        globals.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
+        ConnectGhostSignals();
 
     }
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-        UpdateSourceTarget();
+        speed = baseSpeed * (GameScript.gameSpeed + 0.28f);
+        source = mazeTm.WorldToMap(Position);
+
+        if (defaultTarget)
+        {
+            UpdateTarget();
+        }
+
 
         PlayAndPauseAnim(movementV);
         ProcessStates(delta);
         //GD.Print("ghostspeed", speed);
 
     }
+
+    private void ConnectGhostSignals()
+    {
+        game.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
+        game.Connect("DecoyPowerupActivated", this, "_OnDecoyPowerupActivated");
+        game.Connect("RandomizerPowerupActivated", this, "_OnRandomizerPowerupActivated");
+    }
     protected override void MoveAnimManager(Vector2 masVector)
     {
-
-
         masVector = masVector.Normalized().Round();
 
-
-        //GD.Print(masVector);
         if (masVector == Vector2.Up)
         {
             ghostEyes.Play("up");
@@ -163,7 +170,7 @@ public class GhostScript : CharacterScript
     protected bool IsOnNode(Vector2 pos) //make sure to pass in a worldtomap vector
     {
 
-        if (nodeTilemap.GetCellv(pos) == Globals.NODE)
+        if (nodeTilemap.GetCellv(pos) == MazeGenerator.NODE)
         {
             return true;
         }
@@ -184,7 +191,7 @@ public class GhostScript : CharacterScript
             //GD.Print("mazeorigin+height-1 ", mazeOrigin + mazeheight - 1);
 
             //the node must have the same x or y as targetPos
-            int shortestInt = Globals.INFINITY;
+            int shortestInt = GameScript.INFINITY;
             shortestNode = Vector2.Inf;
 
             foreach (Vector2 node in moveScr.nodeList)
@@ -315,9 +322,11 @@ public class GhostScript : CharacterScript
         patrolTimer.Stop();
         //patrolTimer.Paused = true; //pauses patrol timer as scatter uses patrol mode for pathfinding
 
-        GD.Print("VULNERABLE STATE");
+        //GD.Print("VULNERABLE STATE");
+
         ghostBody.Modulate = Colors.White;
         ghostEyes.Visible = false;
+
 
         ghostBody.Play("vulnerable");
         GhostPatrol(delta);
@@ -349,9 +358,9 @@ public class GhostScript : CharacterScript
         }
     }
 
-    public virtual void UpdateSourceTarget()
+    public virtual void UpdateTarget()
     {
-        source = mazeTm.WorldToMap(Position);
+
         target = FindClosestNodeTo(mazeTm.WorldToMap(pacman.Position));
     }
 
@@ -370,6 +379,7 @@ public class GhostScript : CharacterScript
         if ((area.Name == "PacmanArea") && (ghostState == states.vulnerable))
         {
             game.score += (int)(baseScore * game.scoreMultiplier); //add 100*mult to gamescript.score
+            game.scoreMultiplier += 0.25f; //increase mult by 0.25
             QueueFree();
         }
     }
@@ -379,13 +389,38 @@ public class GhostScript : CharacterScript
         speed = oldSpeed;
         hasIntersectedBefore = false;
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------Powerup Signals----------------------------------------------------------------------------------------------
 
     public void _OnPowerPelletActivated()
     {
         EnterState(states.vulnerable);
         pacman.EnableInvincibility(vulnerableTimer.TimeLeft);
     }
+
+    public void _OnDecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime)
+    {
+
+        defaultTarget = false;
+        target = FindClosestNodeTo(mazeTm.WorldToMap(newPosition)); //change target to position of decoy
+        EnterState(states.chase); //chase towards new target
+
+        chaseTimer.Start(decoyLengthTime);
+
+        if (chaseTimer.TimeLeft == 0)
+        {
+            defaultTarget = true; //after chasing new target for decoylengthtime, chase default target
+        }
+
+    }
+
+    public void _OnRandomizerPowerupActivated()
+    {
+        Random rnd = new Random();
+        int algoLength = Enum.GetNames(typeof(algo)).Length;
+        searchingAlgo = (algo)rnd.Next(0, algoLength);
+    }
+
+
 
 }
 

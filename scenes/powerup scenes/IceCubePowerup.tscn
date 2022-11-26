@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/powerup scenes/ItemPickup.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/sprites/powerups/ice_cube_pixel_art_by_aragods_ddh4smq-fullview (1).png" type="Texture" id=2]
+[ext_resource path="res://scripts/powerup scripts/IceCubePowerupScript.cs" type="Script" id=3]
+
+[node name="IceCube" instance=ExtResource( 1 )]
+scale = Vector2( 1, 1 )
+texture = ExtResource( 2 )
+script = ExtResource( 3 )
+changeSpeedVal = -0.9
+icecubeWaitTime = 0
+
+[node name="PowerupTimer" type="Timer" parent="." index="1"]
+wait_time = 10.0
+one_shot = true
+
+[connection signal="timeout" from="PowerupTimer" to="." method="_OnPowerupTimerTimeout"]

@@ -14,13 +14,35 @@ public class PacmanScript : CharacterScript
 
 
     // Called when the node enters the scene tree for the first time.
-    public PacmanScript()
+    public override void _Ready()
     {
-        //speed = 100; //originally 100 speed
-        //speed = 100 * Globals.gameSpeed; //need to figure out a way to have this inside of the character class/globals or something
+        GD.Print("pacman ready");
+        mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
+        raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
+        game = GetNode<GameScript>("/root/Game");
+
+
+
+        //put all the labels with initial values in a function like this and call the function in ready
+
+        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 3) * 32 + new Vector2(16, 16);
+
+        GD.Print("pman ps", Position);
     }
 
-    public void GetInput()
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _PhysicsProcess(float delta)
+    {
+        GetInput();
+        Vector2 masVector = Move(moveDir, speed);
+        MoveAnimManager(masVector);
+
+        speed = baseSpeed * GameScript.gameSpeed;
+
+        UpdateTravelDistance();
+    }
+
+    private void GetInput()
     {
         if (Input.IsActionJustPressed("move_up"))
         {
@@ -62,13 +84,14 @@ public class PacmanScript : CharacterScript
         return masVector;
     }
 
-    bool invincible = false;
+    private bool invincible = false;
     public void _OnPacmanAreaEntered(Area area) //do more stuff with this
     {
         //GD.Print(area.Name);
         if (area.Name == "GhostArea" && !invincible)
         {
             lives--;
+            game.scoreMultiplier = 1.0f; //if you lose a life reset the score multiplier
             CallDeferred("EnableInvincibility", 3);
         }
 
@@ -93,8 +116,8 @@ public class PacmanScript : CharacterScript
     }
 
 
-    Vector2 oldPos = new Vector2(Globals.INFINITY, Globals.INFINITY);
-    public void UpdateTravelDistance()
+    private Vector2 oldPos = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
+    private void UpdateTravelDistance()
     {
         if ((int)((Position / 32).y) < (int)((oldPos / 32).y))
         {
@@ -105,31 +128,5 @@ public class PacmanScript : CharacterScript
 
 
 
-    public override void _Ready()
-    {
-        GD.Print("pacman ready");
-        mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
-        raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
-        game = GetNode<GameScript>("/root/Game");
 
-
-
-        //put all the labels with initial values in a function like this and call the function in ready
-
-        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 3) * 32 + new Vector2(16, 16);
-
-        GD.Print("pman ps", Position);
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _PhysicsProcess(float delta)
-    {
-        GetInput();
-        Vector2 masVector = Move(moveDir, speed);
-        MoveAnimManager(masVector);
-
-        speed = baseSpeed * Globals.gameSpeed;
-
-        UpdateTravelDistance();
-    }
 }

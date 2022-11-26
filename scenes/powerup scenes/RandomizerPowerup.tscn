@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/sprites/powerups/Retro-Block-Question-2-icon.png" type="Texture" id=1]
+[ext_resource path="res://scenes/powerup scenes/ItemPickup.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/powerup scripts/RandomizerPowerupScript.cs" type="Script" id=3]
+
+[node name="Randomizer" instance=ExtResource( 2 )]
+modulate = Color( 1, 0, 0, 1 )
+scale = Vector2( 1, 1 )
+texture = ExtResource( 1 )
+script = ExtResource( 3 )

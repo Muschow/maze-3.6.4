@@ -1,20 +1,8 @@
 using Godot;
 using System;
 
-public class BlinkyScript : GhostScript
+public class RandomizerPowerupScript : ItemPickupScript
 {
-    public BlinkyScript()
-    {
-        ghostColour = Colors.Red;
-        searchingAlgo = algo.dijkstras;
-    }
-
-    public override void UpdateTarget()
-    {
-        target = FindClosestNodeTo(mazeTm.WorldToMap(pacman.Position)); //blinky finds closest node to player
-    }
-
-
     // Declare member variables here. Examples:
     // private int a = 2;
     // private string b = "text";
@@ -31,8 +19,10 @@ public class BlinkyScript : GhostScript
     //      
     //  }
 
-
-
-
-
+    //Randomizer randomises all the ghost's searching algorithms for the rest of the game so you have to relearn which ones they use
+    public override void ItemAbility()
+    {
+        game.EmitSignal("RandomizerPowerupActivated");
+        QueueFree();
+    }
 }

@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 public class MazeGenerator : TileMap
 {
+    //---------------------------------------------statics and constants-----------------------------
+    public const int CELLSIZE = 32;
+    public const int NODE = 0;
+    public const int WALL = 1;
+    public const int PATH = 0;
+    public static Vector2 halfCellSize = new Vector2(CELLSIZE / 2, CELLSIZE / 2);
+
+    //-------------------------------------------------------------------------------------------------
     [Export] public int width = 31; //originally 31
     [Export] public int height = 38; //was originally 19
     public int mazeOriginY = 0; //maybe make this or mazeStartLoc a global variable/static or something
@@ -34,7 +42,7 @@ public class MazeGenerator : TileMap
 
     //-----------------------------------------------------------PackedScenes---------------------------------------------------------------------------
     PackedScene pelletScene = GD.Load<PackedScene>("res://scenes/Pellet.tscn");
-    PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/PowerupFactory.tscn");
+    PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/powerup scenes/PowerupFactory.tscn");
     //--------------------------------------------------------End of PackedScenes-----------------------------------------------------------------------
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
     //Called when the node enters the scene tree for the first time.
@@ -57,9 +65,9 @@ public class MazeGenerator : TileMap
         //PrintNodeList();
         GenerateAdjList();
         //PrintAdjList(adjacencyList);
-        //Node2D powerupFactory = (Node2D)powerupFactoryScene.Instance();
+
         numChildrenOfPowerupFactory = powerupFactory.GetChildCount();
-        numPowerupsToSpawn = (int)GD.RandRange(1, 10);
+        numPowerupsToSpawn = (int)GD.RandRange(1, 5);
 
         AddRandomPowerups();
 
@@ -117,7 +125,7 @@ public class MazeGenerator : TileMap
                 //wall tile edges
                 if ((i == 0 && j != 0) || (i == width - 1 && j != 0) || (j == height - 1)) //j != 0 stuff removes the entire top layer
                 {
-                    SetCell(i, j + mazeOriginY, Globals.WALL);
+                    SetCell(i, j + mazeOriginY, WALL);
 
                     Vector2 wallEdge = new Vector2(i, j + mazeOriginY);
                     wallEdgeList.Add(wallEdge);
@@ -125,12 +133,12 @@ public class MazeGenerator : TileMap
                 //alternating wall tiles
                 else if ((i % 2 == 0 || j % 2 == 0) && (j != 0)) //again, j!=0 removes the top layer so that the next maze can slot into it
                 {
-                    SetCell(i, j + mazeOriginY, Globals.WALL);
+                    SetCell(i, j + mazeOriginY, WALL);
                 }
                 //path tiles that go between those alternating wall tiles
                 else if (j != 0)
                 {
-                    SetCell(i, j + mazeOriginY, Globals.PATH);
+                    SetCell(i, j + mazeOriginY, PATH);
                     AddPellet(new Vector2(i, j + mazeOriginY));
                 }
             }
@@ -147,16 +155,16 @@ public class MazeGenerator : TileMap
             if (!complete)
             {
                 Vector2 newCell = new Vector2(currentV + directions[i]);
-                if ((GetCellv(newCell) == Globals.WALL) && (!wallEdgeList.Contains(newCell)) && (!visited.Contains(newCell)))
+                if ((GetCellv(newCell) == WALL) && (!wallEdgeList.Contains(newCell)) && (!visited.Contains(newCell)))
                 {
-                    SetCellv(newCell, Globals.PATH);
+                    SetCellv(newCell, PATH);
                     AddPellet(newCell);
 
-                    if (GetCellv(currentV + (directions[i] * 3)) != Globals.PATH)
+                    if (GetCellv(currentV + (directions[i] * 3)) != PATH)
                     {
                         AddNode(currentV + (directions[i] * 2));
                     }
-                    if (GetCellv(currentV + (directions[i] * -1)) != Globals.PATH)
+                    if (GetCellv(currentV + (directions[i] * -1)) != PATH)
                     {
                         AddNode(currentV);
                     }
@@ -177,16 +185,16 @@ public class MazeGenerator : TileMap
         {
             Vector2 topWallCell = new Vector2(i, mazeOriginY);
 
-            if (GetCellv(topWallCell + Vector2.Down) == Globals.WALL)
+            if (GetCellv(topWallCell + Vector2.Down) == WALL)
             {
-                SetCellv(topWallCell + Vector2.Down, Globals.PATH);
+                SetCellv(topWallCell + Vector2.Down, PATH);
                 AddPellet(topWallCell + Vector2.Down);
                 //GD.Print("set " + new Vector2(removeCell + south) + " path");
                 //GD.Print("set cell+south path");
             }
 
             //on the top layer, if there isnt a node where there should be one due to removing the top wall, place one
-            if (GetCellv(topWallCell + (Vector2.Down * 2)) == Globals.PATH && nodeTilemap.GetCellv(topWallCell + Vector2.Down) != Globals.NODE)
+            if (GetCellv(topWallCell + (Vector2.Down * 2)) == PATH && nodeTilemap.GetCellv(topWallCell + Vector2.Down) != NODE)
             {
                 AddNode(topWallCell + Vector2.Down);
                 //GD.Print("addNode " + new Vector2(topWallCell + south));
@@ -203,9 +211,9 @@ public class MazeGenerator : TileMap
             {
                 int cellX = rnd.Next(1, width - 1);
                 Vector2 cell = new Vector2(cellX, mazeOriginY + height - 1);
-                if (GetCellv(cell) == Globals.WALL && GetCellv(cell + Vector2.Up) == Globals.PATH && GetCellv(cell + Vector2.Right) == Globals.WALL && GetCellv(cell + Vector2.Left) == Globals.WALL) //makes it so each hole has 2 walls either side
+                if (GetCellv(cell) == WALL && GetCellv(cell + Vector2.Up) == PATH && GetCellv(cell + Vector2.Right) == WALL && GetCellv(cell + Vector2.Left) == WALL) //makes it so each hole has 2 walls either side
                 {
-                    SetCellv(cell, Globals.PATH);
+                    SetCellv(cell, PATH);
                     AddPellet(cell);
                     numUsedCells++;
                     //I deliberately made it so there are no nodes joining the 2 mazes. This is as a ghost is instanced on its own maze; if pacman goes between mazes, 
@@ -220,10 +228,10 @@ public class MazeGenerator : TileMap
 
     private void AddNode(Vector2 nodeLocation)
     {
-        if (nodeTilemap.GetCellv(nodeLocation) != Globals.NODE) //makes sure theres no duplicates... in a perfect world i would not need this
+        if (nodeTilemap.GetCellv(nodeLocation) != NODE) //makes sure theres no duplicates... in a perfect world i would not need this
         {
             //SetCellv(nodeLocation, -1); //deletes tile so will remove wall node that collides (probably dont actually need this but just in case lol)
-            nodeTilemap.SetCellv(nodeLocation, Globals.NODE); //turns it into an actual path node tile
+            nodeTilemap.SetCellv(nodeLocation, NODE); //turns it into an actual path node tile
 
             nodeList.Add(nodeLocation);
 
@@ -271,7 +279,7 @@ public class MazeGenerator : TileMap
             for (int i = 0; i < rndDirections.Count; i++)
             {
                 next = 2 * rndDirections[i];
-                if (GetCellv(curr + next) == Globals.PATH && (!visited.Contains(curr + next)))
+                if (GetCellv(curr + next) == PATH && (!visited.Contains(curr + next)))
                 { //If the current cell has any neighbours which have not been visited,
                     found = true;
                     break; //Choose one of the unvisited neighbours (next),
@@ -287,7 +295,7 @@ public class MazeGenerator : TileMap
                 prev = next;
 
                 rdfStack.Push(curr); //Push the current cell to the stack,
-                SetCellv(curr + (next / 2), Globals.PATH); // Remove the wall between the current cell and the chosen cell,
+                SetCellv(curr + (next / 2), PATH); // Remove the wall between the current cell and the chosen cell,
                 AddPellet(curr + (next / 2));
                 visited.Add(curr + next); //Mark the chosen cell as visited,
                 rdfStack.Push(curr + next); //and push it to the stack.  
@@ -349,7 +357,7 @@ public class MazeGenerator : TileMap
         {
             for (int j = 0; j < width; j++)
             {
-                if (nodeTilemap.GetCell(j, i) == Globals.NODE)
+                if (nodeTilemap.GetCell(j, i) == NODE)
                 {
                     nodeList.Add(new Vector2(j, i));
                 }
@@ -368,7 +376,7 @@ public class MazeGenerator : TileMap
         {
             for (int y = (int)vec1.y; (int)y < vec2.y; y++)
             {
-                if ((GetCell((int)vec1.x, y) == Globals.WALL) || (nodeTilemap.GetCell((int)vec1.x, y) == Globals.NODE && y != vec1.y && y != vec2.y))
+                if ((GetCell((int)vec1.x, y) == WALL) || (nodeTilemap.GetCell((int)vec1.x, y) == NODE && y != vec1.y && y != vec2.y))
                 {
                     //GD.Print("reached get cell x: " + vec1.x + ",y: " + y);
                     return true;
@@ -380,7 +388,7 @@ public class MazeGenerator : TileMap
         {
             for (int x = (int)vec1.x; (int)x < vec2.x; x++)
             {
-                if (GetCell(x, (int)vec1.y) == Globals.WALL || (nodeTilemap.GetCell(x, (int)vec1.y) == Globals.NODE && x != vec1.x && x != vec2.x))
+                if (GetCell(x, (int)vec1.y) == WALL || (nodeTilemap.GetCell(x, (int)vec1.y) == NODE && x != vec1.x && x != vec2.x))
                 {
                     return true;
                 }
@@ -480,7 +488,7 @@ public class MazeGenerator : TileMap
         int x = rnd.Next(1, width);
         int y = mazeOriginY + rnd.Next(1, height - 2);
 
-        while (GetCell(x, y) == Globals.WALL)
+        while (GetCell(x, y) == WALL)
         {
             x = rnd.Next(1, width);
             y = mazeOriginY + rnd.Next(1, height - 2);
@@ -489,8 +497,7 @@ public class MazeGenerator : TileMap
         Vector2 spawnLoc = new Vector2(x, y);
         GD.Print("spawn" + spawnLoc); //debug
 
-        spawnLoc = new Vector2(MapToWorld(spawnLoc) + Globals.halfCellSize);
-
+        spawnLoc = new Vector2(MapToWorld(spawnLoc) + halfCellSize);
 
         GD.Print("MTWspawnLoc: " + spawnLoc); //debug
         return spawnLoc;

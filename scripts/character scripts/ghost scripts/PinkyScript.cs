@@ -11,9 +11,9 @@ public class PinkyScript : GhostScript
     }
 
 
-    public override void UpdateSourceTarget()
+    public override void UpdateTarget()
     {
-        source = mazeTm.WorldToMap(Position);
+
 
         Vector2 currTarget = mazeTm.WorldToMap(pacman.Position);
         if (IsOnNode(mazeTm.WorldToMap(pacman.Position))) //only update pacman positon when passed node

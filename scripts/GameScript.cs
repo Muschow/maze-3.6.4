@@ -3,6 +3,17 @@ using System;
 
 public class GameScript : Node2D
 {
+
+    public const int INFINITY = 9999;
+    public static float gameSpeed = 0.72f;
+
+
+    //---------------'global' signals -------------
+    [Signal] public delegate void PowerPelletActivated();
+    [Signal] public delegate void DecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime);
+    [Signal] public delegate void RandomizerPowerupActivated();
+
+    //-----------------------------------------------------------------------------------------------------------
     public int mazeStartLoc = 0;
     public int mazesOnTheScreen = 0; //this is literally used for 1 thing to make the walls black on the bottom of the first maze. Probably a better way to do this...
 
@@ -80,7 +91,7 @@ public class GameScript : Node2D
     {
         if (Math.Floor(pacman.Position.y / 32) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
         {
-            Globals.gameSpeed += 0.28f; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
+            GameScript.gameSpeed += 0.28f; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
             InstanceAndRemoveMazes();
         }
         UpdateLabels();
