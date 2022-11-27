@@ -36,7 +36,7 @@ public class GameScript : Node2D
     {
         //store all the getnodes, MazeGenerator mazeG = new MazeGenerator() stuff in here instead of in the ready function for better encapsulation
 
-        mazeStartLoc -= (mazeTm.height - 1);
+        mazeStartLoc -= (mazeTm.height - 1); //this was -=
 
         Node2D mazeInstance = (Node2D)mazeScene.Instance();
         mazeContainer.AddChild(mazeInstance, true);

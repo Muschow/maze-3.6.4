@@ -9,8 +9,8 @@ public abstract class CharacterScript : KinematicBody2D
     // private string b = "text";
 
     // Called when the node enters the scene tree for the first time.
-    protected float speed;
-    public float baseSpeed = 100;
+    public float speed;
+    protected float baseSpeed = 100;
     protected MazeGenerator mazeTm;
 
     protected AnimatedSprite animatedSprite;

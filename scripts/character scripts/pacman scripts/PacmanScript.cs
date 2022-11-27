@@ -25,8 +25,8 @@ public class PacmanScript : CharacterScript
 
         //put all the labels with initial values in a function like this and call the function in ready
 
-        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 3) * 32 + new Vector2(16, 16);
-
+        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 2) * 32 + new Vector2(16, 16);
+        GD.Print("pacman mazeheight,", mazeTm.height);
         GD.Print("pman ps", Position);
     }
 

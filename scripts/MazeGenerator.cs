@@ -13,11 +13,9 @@ public class MazeGenerator : TileMap
 
     //-------------------------------------------------------------------------------------------------
     [Export] public int width = 31; //originally 31
-    [Export] public int height = 38; //was originally 19
+    [Export] public int height = 38; //was originally 19, then 38, now random
     public int mazeOriginY = 0; //maybe make this or mazeStartLoc a global variable/static or something
-    private int backtrackCount = 0;
-    private int numChildrenOfPowerupFactory;
-    private int numPowerupsToSpawn;
+    private int backtrackCount = 0; //used to figure out when to join dead ends
     private bool generationComplete = false;
 
     Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
@@ -28,7 +26,6 @@ public class MazeGenerator : TileMap
 
     //-----------------------------------------------------Adjacency Matrix/List properties---------------------------------------------------------------
     public List<Vector2> nodeList = new List<Vector2>(); //for nodes,maybe get rid of this to be honest
-
     public LinkedList<Tuple<Vector2, int>>[] adjacencyList;
 
     //-------------------------------------------------End of Adjacency Matrix/List properties-----------------------------------------------------------
@@ -45,29 +42,30 @@ public class MazeGenerator : TileMap
     PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/powerup scenes/PowerupFactory.tscn");
     //--------------------------------------------------------End of PackedScenes-----------------------------------------------------------------------
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
+    public override void _EnterTree()
+    {
+        //height = (int)GD.RandRange(19, 38);
+        CorrectMazeSize(); //makes width and height odd when maze enters scene tree (before ready is called)
+    }
     //Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         GD.Print("mazegen ready");
+
+        GD.Randomize();
+
         gameScr = GetNode<GameScript>("/root/Game");
         nodeTilemap = GetParent().GetNode<TileMap>("NodeTilemap");
         powerupContainer = GetParent().GetNode<Node2D>("PowerupContainer");
         powerupFactory = (Node2D)powerupFactoryScene.Instance();
 
-        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout
-        //maybe this would work if it was static and we just deleted mazestartloc
 
-        GD.Randomize();
+        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout //maybe this would work if it was static and we just deleted mazestartloc
+
         IterativeDFSInit();
         //UpdateDirtyQuadrants(); //maybe get rid of this tbh, not sure if its doing anything. Supposed to force and update to the tilemap if tiles arent updating
 
-
-        //PrintNodeList();
         GenerateAdjList();
-        //PrintAdjList(adjacencyList);
-
-        numChildrenOfPowerupFactory = powerupFactory.GetChildCount();
-        numPowerupsToSpawn = (int)GD.RandRange(1, 5);
 
         AddRandomPowerups();
 
@@ -80,6 +78,8 @@ public class MazeGenerator : TileMap
 
     // }
 
+
+
     //-----------------------------------------------------------End of ready and process-----------------------------------------------------------
     //------------------------------------------------------Instancing Scenes Functions----------------------------------------------------------------
     private void AddPellet(Vector2 spawnPosition)
@@ -91,11 +91,12 @@ public class MazeGenerator : TileMap
 
     private void AddRandomPowerups()
     {
+        int numPowerupsToSpawn = (int)GD.RandRange(1, 5);
         for (int i = 0; i < numPowerupsToSpawn; i++)
         {
-            Sprite powerup = (Sprite)powerupFactory.GetChild((int)GD.RandRange(0, numChildrenOfPowerupFactory)).Duplicate();
+            Sprite powerup = (Sprite)powerupFactory.GetChild((int)GD.RandRange(0, powerupFactory.GetChildCount())).Duplicate();
             powerupContainer.AddChild(powerup);
-            powerup.Position = SetSpawn();
+            powerup.Position = SetRandomSpawnOnPath();
         }
     }
 
@@ -248,7 +249,7 @@ public class MazeGenerator : TileMap
     {
         generationComplete = false;
 
-        CorrectMazeSize();
+
         CreateStartingGrid();
 
         //startVector x and y must be odd, between 1+mazeOriginX/Y & height-1 / width-1 
@@ -481,7 +482,7 @@ public class MazeGenerator : TileMap
 
     //--------------------------------------Other functions --------------------------------------------------------------------
 
-    private Vector2 SetSpawn() //probably place this somewhere else or make global idk
+    private Vector2 SetRandomSpawnOnPath() //probably place this somewhere else or make global idk
     {
         Random rnd = new Random();
 
