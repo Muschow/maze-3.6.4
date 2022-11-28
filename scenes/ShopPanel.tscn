@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/sprites/powerups/ice_cube_pixel_art_by_aragods_ddh4smq-fullview (1).png" type="Texture" id=3]
+
+[node name="ShopItem" type="Panel"]
+margin_left = 54.0
+margin_top = 70.0
+margin_right = 208.0
+margin_bottom = 231.0
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 76, 22 )
+texture = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = -10.0
+margin_top = 50.0
+margin_right = 166.0
+margin_bottom = 115.0
+text = "ICE CUBE
+Upgrading decreases 
+speed of ghosts 
+and killwall"
+align = 1
+
+[node name="Button" type="Button" parent="."]
+margin_left = 23.0
+margin_top = 125.0
+margin_right = 128.0
+margin_bottom = 145.0
+text = "Upgrade: 1000"
