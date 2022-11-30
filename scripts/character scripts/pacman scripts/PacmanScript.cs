@@ -11,6 +11,7 @@ public class PacmanScript : CharacterScript
     private PackedScene[] inventory = new PackedScene[3];
     private GameScript game;
     [Export] public int lives = 3;
+    [Export] public int maxLives = 3;
 
 
     // Called when the node enters the scene tree for the first time.
@@ -33,13 +34,17 @@ public class PacmanScript : CharacterScript
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
-        GetInput();
-        Vector2 masVector = Move(moveDir, speed);
-        MoveAnimManager(masVector);
+        if (GameScript.movementEnabled)
+        {
+            GetInput();
+            Vector2 masVector = Move(moveDir, speed);
+            MoveAnimManager(masVector);
 
-        speed = baseSpeed * GameScript.gameSpeed;
+            speed = baseSpeed * GameScript.gameSpeed;
 
-        UpdateTravelDistance();
+            UpdateTravelDistance();
+        }
+
     }
 
     private void GetInput()

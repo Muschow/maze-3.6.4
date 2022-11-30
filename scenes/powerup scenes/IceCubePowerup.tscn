@@ -9,7 +9,7 @@ scale = Vector2( 1, 1 )
 texture = ExtResource( 2 )
 script = ExtResource( 3 )
 changeSpeedVal = -0.9
-icecubeWaitTime = 0
+icecubeWaitTime = 10
 
 [node name="PowerupTimer" type="Timer" parent="." index="1"]
 wait_time = 10.0
