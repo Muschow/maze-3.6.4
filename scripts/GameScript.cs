@@ -5,13 +5,17 @@ public class GameScript : Node2D
 {
 
     public const int INFINITY = 9999;
-    public static float gameSpeed = 0.72f;
+    public static float gameSpeed = 1;
+    [Export] private float gameSpeedInc = 0.28f;
+    private int upgradeLivesCost = 1000;
 
+    public static bool movementEnabled = true;
 
     //---------------'global' signals -------------
     [Signal] public delegate void PowerPelletActivated();
     [Signal] public delegate void DecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime);
     [Signal] public delegate void RandomizerPowerupActivated();
+
 
     //-----------------------------------------------------------------------------------------------------------
     public int mazeStartLoc = 0;
@@ -21,7 +25,7 @@ public class GameScript : Node2D
     public int travelDist = 0;
     public float scoreMultiplier = 1.0f;
 
-    private PacmanScript pacman;
+    public PacmanScript pacman;
     private MazeGenerator mazeTm;
     private Node2D mazeContainer;
     private HBoxContainer labelContainer;
@@ -62,10 +66,17 @@ public class GameScript : Node2D
 
     private void UpdateLabels()
     {
-        labelContainer.GetNode<Label>("LifeCounter").Text = "Lives:" + pacman.lives + " ";
+        labelContainer.GetNode<Label>("LifeCounter").Text = "Lives:" + pacman.lives + "/" + pacman.maxLives;
         labelContainer.GetNode<Label>("DistCounter").Text = "Dist:" + travelDist + " ";
         labelContainer.GetNode<Label>("ScoreCounter").Text = "Score:" + score + " ";
         labelContainer.GetNode<Label>("MultiplierCounter").Text = "Mult:" + scoreMultiplier + "x ";
+        labelContainer.GetNode<Button>("IncLives").Text = "+1 Life:" + upgradeLivesCost;
+        labelContainer.GetNode<Button>("IncMaxLives").Text = "+1 Max Lives:" + upgradeLivesCost;
+    }
+
+    public override void _EnterTree()
+    {
+        gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
     }
     public override void _Ready()
     {
@@ -91,14 +102,42 @@ public class GameScript : Node2D
     {
         if (Math.Floor(pacman.Position.y / 32) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
         {
-            GameScript.gameSpeed += 0.28f; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
+            GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
             InstanceAndRemoveMazes();
         }
         UpdateLabels();
 
         //GD.Print("stray nodes");
         //PrintStrayNodes(); //put a post on godot forums on how to fix this and the objects leaks errors
+
     }
+
+    public void _OnIncLivesButtonPressed()
+    {
+        if (score >= upgradeLivesCost && pacman.lives < pacman.maxLives)
+        {
+            pacman.lives++;
+            PurchaseLifeUpgrade();
+
+        }
+
+    }
+
+    public void _OnIncMaxLivesButtonPressed()
+    {
+        if (score >= upgradeLivesCost)
+        {
+            pacman.maxLives++;
+            PurchaseLifeUpgrade();
+        }
+    }
+
+    private void PurchaseLifeUpgrade()
+    {
+        score -= upgradeLivesCost;
+        upgradeLivesCost += upgradeLivesCost;
+    }
+
 
 
 }

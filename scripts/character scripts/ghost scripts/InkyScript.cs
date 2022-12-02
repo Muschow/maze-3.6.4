@@ -6,7 +6,12 @@ public class InkyScript : GhostScript
     public InkyScript() //inky should move randomly, essentially, constantly be in patrol mode
     {
         ghostColour = Colors.Cyan;
-        searchingAlgo = algo.astar; //blue, although it moves randomly, uses astar as thats generally the fastest algorithm
+
+        Array values = Enum.GetValues(typeof(algo));
+        Random random = new Random();
+        algo randomAlgo = (algo)values.GetValue(random.Next(values.Length));
+
+        searchingAlgo = randomAlgo; //blue, although it moves randomly, uses astar as thats generally the fastest algorithm
     }
     // Declare member variables here. Examples:
     // private int a = 2;

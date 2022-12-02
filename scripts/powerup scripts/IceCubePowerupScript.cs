@@ -4,7 +4,7 @@ using System;
 public class IceCubePowerupScript : ItemPickupScript
 {
     [Export] private float changeSpeedVal = -0.5f; //upgrades make this slower by -=0.1 or something
-    [Export] private int icecubeWaitTime;
+    [Export] private int icecubeWaitTime = 10;
     private PacmanScript pacman;
     private bool fixPacmanSpeed = false;
 
@@ -13,7 +13,8 @@ public class IceCubePowerupScript : ItemPickupScript
     {
         base._Ready();
         pacman = GetNode<PacmanScript>("/root/Game/Pacman");
-        icecubeWaitTime = 10;
+
+
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,7 +27,9 @@ public class IceCubePowerupScript : ItemPickupScript
     }
     public override void ItemAbility()
     {
-        Visible = false;
+        changeSpeedVal = GameScript.gameSpeed / -2;
+
+        this.Visible = false;
 
         GetNode<CollisionShape2D>("ItemArea/CollisionShape2D").SetDeferred("Disabled", true);
         GetNode<Timer>("PowerupTimer").Start(icecubeWaitTime);
@@ -43,8 +46,13 @@ public class IceCubePowerupScript : ItemPickupScript
 
     public void _OnPowerupTimerTimeout()    //on timer timeout, reset everything and delete powerup
     {
+        GD.Print("onpoweruptimertimeout");
+
+
         fixPacmanSpeed = false;
         GameScript.gameSpeed -= changeSpeedVal;
         QueueFree();
+
+
     }
 }

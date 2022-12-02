@@ -79,7 +79,6 @@ public class GhostScript : CharacterScript
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-        speed = baseSpeed * (GameScript.gameSpeed + 0.28f);
         source = mazeTm.WorldToMap(Position);
 
         if (defaultTarget)
@@ -87,10 +86,17 @@ public class GhostScript : CharacterScript
             UpdateTarget();
         }
 
+        if (GameScript.movementEnabled)
+        {
+            speed = baseSpeed * (GameScript.gameSpeed);
 
-        PlayAndPauseAnim(movementV);
-        ProcessStates(delta);
-        //GD.Print("ghostspeed", speed);
+
+
+            PlayAndPauseAnim(movementV);
+            ProcessStates(delta);
+            //GD.Print("ghostspeed", speed);
+        }
+
 
     }
 
@@ -192,7 +198,7 @@ public class GhostScript : CharacterScript
 
             //the node must have the same x or y as targetPos
             int shortestInt = GameScript.INFINITY;
-            shortestNode = Vector2.Inf;
+            shortestNode = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
 
             foreach (Vector2 node in moveScr.nodeList)
             {
@@ -372,7 +378,7 @@ public class GhostScript : CharacterScript
         if (hasIntersectedBefore == false)
         {
             oldSpeed = speed;
-            speed = speed + (int)GD.RandRange(-20, 20);
+            speed = speed + (int)GD.RandRange(-20, 0);
         }
         hasIntersectedBefore = true;
 

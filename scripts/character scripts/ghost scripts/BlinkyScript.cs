@@ -12,6 +12,7 @@ public class BlinkyScript : GhostScript
     public override void UpdateTarget()
     {
         target = FindClosestNodeTo(mazeTm.WorldToMap(pacman.Position)); //blinky finds closest node to player
+        GD.Print("blinky speed" + speed);
     }
 
 
