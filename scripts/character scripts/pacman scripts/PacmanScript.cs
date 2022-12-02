@@ -115,7 +115,7 @@ public class PacmanScript : CharacterScript
         GetNode<Timer>("PacmanArea/InvincibleTimer").Start(time);
     }
 
-    public void _OnInvincibleTimerTimeout()
+    private void _OnInvincibleTimerTimeout()
     {
         invincible = false; //disable invincibility
     }

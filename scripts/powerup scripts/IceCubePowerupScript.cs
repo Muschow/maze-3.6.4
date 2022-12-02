@@ -44,7 +44,7 @@ public class IceCubePowerupScript : ItemPickupScript
         }
     }
 
-    public void _OnPowerupTimerTimeout()    //on timer timeout, reset everything and delete powerup
+    private void _OnPowerupTimerTimeout()    //on timer timeout, reset everything and delete powerup
     {
         GD.Print("onpoweruptimertimeout");
 

@@ -217,24 +217,7 @@ public class GhostScript : CharacterScript
 
         return shortestNode;
     }
-    // private List<Vector2> GetAvailableDir()
-    // {
-    //     Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
-    //     List<Vector2> availableDir = new List<Vector2>();
 
-    //     TileMap mazeTm = this.GetParent().GetNode<TileMap>("MazeTilemap");
-
-    //     //checks for available directions on ghost curr position
-    //     foreach (Vector2 dir in directions)
-    //     {
-    //         if (mazeTm.GetCellv(source + dir) != Globals.WALL)
-    //         {
-    //             availableDir.Add(dir);
-    //         }
-    //     }
-
-    //     return availableDir;
-    // }
     private void GeneratePath(Vector2 sourcePos, Vector2 targetPos)
     {
         if (searchingAlgo == algo.dijkstras)
@@ -373,7 +356,7 @@ public class GhostScript : CharacterScript
     //----------------------------These 2 signals are for if ghosts overlap each other. Gives them random speed increase so they dont overlap---------------------------------------
     private bool hasIntersectedBefore = false;
     protected float oldSpeed;
-    public void _OnGhostAreaEntered(Area2D area) //if 2 ghosts are ontop of each other, randomly increase speed so they move away
+    private void _OnGhostAreaEntered(Area2D area) //if 2 ghosts are ontop of each other, randomly increase speed so they move away
     {
         if (hasIntersectedBefore == false)
         {
@@ -390,20 +373,20 @@ public class GhostScript : CharacterScript
         }
     }
 
-    public void _OnGhostAreaExited(Area2D area) //when 2 ghosts are not ontop of each other reset speed back to normal.
+    private void _OnGhostAreaExited(Area2D area) //when 2 ghosts are not ontop of each other reset speed back to normal.
     {
         speed = oldSpeed;
         hasIntersectedBefore = false;
     }
     //------------------------------------------------------------------------Powerup Signals----------------------------------------------------------------------------------------------
 
-    public void _OnPowerPelletActivated()
+    private void _OnPowerPelletActivated()
     {
         EnterState(states.vulnerable);
         pacman.EnableInvincibility(vulnerableTimer.TimeLeft);
     }
 
-    public void _OnDecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime)
+    private void _OnDecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime)
     {
 
         defaultTarget = false;
@@ -419,7 +402,7 @@ public class GhostScript : CharacterScript
 
     }
 
-    public void _OnRandomizerPowerupActivated()
+    private void _OnRandomizerPowerupActivated()
     {
         Random rnd = new Random();
         int algoLength = Enum.GetNames(typeof(algo)).Length;

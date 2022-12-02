@@ -112,7 +112,7 @@ public class GameScript : Node2D
 
     }
 
-    public void _OnIncLivesButtonPressed()
+    private void _OnIncLivesButtonPressed()
     {
         if (score >= upgradeLivesCost && pacman.lives < pacman.maxLives)
         {
@@ -123,7 +123,7 @@ public class GameScript : Node2D
 
     }
 
-    public void _OnIncMaxLivesButtonPressed()
+    private void _OnIncMaxLivesButtonPressed()
     {
         if (score >= upgradeLivesCost)
         {
