@@ -6,16 +6,15 @@ public class GameScript : Node2D
 
     public const int INFINITY = 9999;
     public static float gameSpeed = 1;
-    [Export] private float gameSpeedInc = 0.28f;
-    private int upgradeLivesCost = 1000;
+    [Export] private float gameSpeedInc = 0.20f;
+    private int upgradeLivesCost = 500;
 
-    public static bool movementEnabled = true;
 
     //---------------'global' signals -------------
     [Signal] public delegate void PowerPelletActivated();
     [Signal] public delegate void DecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime);
     [Signal] public delegate void RandomizerPowerupActivated();
-
+    [Signal] public delegate void ChangeSpeedModifier(float newSpeedModifier);
 
     //-----------------------------------------------------------------------------------------------------------
     public int mazeStartLoc = 0;
@@ -25,7 +24,7 @@ public class GameScript : Node2D
     public int travelDist = 0;
     public float scoreMultiplier = 1.0f;
 
-    public PacmanScript pacman;
+    private PacmanScript pacman;
     private MazeGenerator mazeTm;
     private Node2D mazeContainer;
     private HBoxContainer labelContainer;
@@ -135,7 +134,7 @@ public class GameScript : Node2D
     private void PurchaseLifeUpgrade()
     {
         score -= upgradeLivesCost;
-        upgradeLivesCost += upgradeLivesCost;
+        upgradeLivesCost += 500;
     }
 
 

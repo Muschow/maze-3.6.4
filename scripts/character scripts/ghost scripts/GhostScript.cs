@@ -19,9 +19,10 @@ public class GhostScript : CharacterScript
     protected Timer patrolTimer;
     protected Timer vulnerableTimer;
     protected Timer resetChasePathTimer;
-
+    private float speedModifier = 1;
     protected Vector2 target;
     private bool defaultTarget = true;
+    public bool ghostIsVulnerable = false;
     protected Vector2 source;
     protected AnimatedSprite ghostBody;
     protected AnimatedSprite ghostEyes;
@@ -29,8 +30,7 @@ public class GhostScript : CharacterScript
     protected enum states
     {
         patrol,
-        chase,
-        vulnerable
+        chase
     }
     protected states ghostState = states.patrol; //initialise ghost state to patrol. Timer randomly switches states from patrol to chase and vice versa
 
@@ -79,25 +79,22 @@ public class GhostScript : CharacterScript
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-        source = mazeTm.WorldToMap(Position);
+        source = mazeTm.WorldToMap(Position); //always updates source pos
 
         if (defaultTarget)
         {
-            UpdateTarget();
+            UpdateTarget(); //only update target is defaultTarget true
         }
 
-        if (GameScript.movementEnabled)
+        speed = baseSpeed * GameScript.gameSpeed * speedModifier; //always update speed
+
+        PlayAndPauseAnim(movementV);
+        ProcessStates(delta);
+
+        if (Input.IsActionJustPressed("ui_accept"))
         {
-            speed = baseSpeed * (GameScript.gameSpeed);
-
-
-
-            PlayAndPauseAnim(movementV);
-            ProcessStates(delta);
-            //GD.Print("ghostspeed", speed);
+            GD.Print("ghost speed ", speed);
         }
-
-
     }
 
     private void ConnectGhostSignals()
@@ -105,6 +102,7 @@ public class GhostScript : CharacterScript
         game.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
         game.Connect("DecoyPowerupActivated", this, "_OnDecoyPowerupActivated");
         game.Connect("RandomizerPowerupActivated", this, "_OnRandomizerPowerupActivated");
+        game.Connect("ChangeSpeedModifier", this, "_OnChangeSpeedModifierActivated");
     }
     protected override void MoveAnimManager(Vector2 masVector)
     {
@@ -137,13 +135,16 @@ public class GhostScript : CharacterScript
         {
             chaseTimer.Start((float)GD.RandRange(10, 30));
         }
-        else if (newGhostState == states.vulnerable)
-        {
-            vulnerableTimer.Start(15);
-            GD.Print("entered vulnerable state");
-        }
-
         ghostState = newGhostState;
+
+
+    }
+
+    private void EnterGhostVulnerable()
+    {
+        ghostIsVulnerable = true;
+        vulnerableTimer.Start(15);
+        GD.Print("entered vulnerable state");
     }
 
     private void _OnResetChasePathTimeout() //recalculates pathfinding when timer timeouts
@@ -153,17 +154,23 @@ public class GhostScript : CharacterScript
 
     private void _OnChaseTimerTimeout()
     {
+        defaultTarget = true; //resets back to default target if its been changed (eg from decoy)
+        GD.Print("chaetimertimeout default target", defaultTarget);
         EnterState(states.patrol); //has to be in here as this is called once and not every frame
     }
 
     private void _OnPatrolTimerTimeout()
     {
+        defaultTarget = true; //resets back to default target if its been changed (eg from decoy)
+        GD.Print("patroltimertimeout default target", defaultTarget);
         EnterState(states.chase);
 
     }
 
     private void _OnVulnerableTimerTimeout()
     {
+        ghostIsVulnerable = false;
+
         patrolTimer.Paused = false;
         ghostBody.Modulate = ghostColour;
         ghostBody.Play("walk");
@@ -188,6 +195,7 @@ public class GhostScript : CharacterScript
 
     protected Vector2 FindClosestNodeTo(Vector2 targetVector) //finds closest node in nodelist to targetVector
     {
+
         Vector2 shortestNode = targetVector;
 
         if (!IsOnNode(targetVector))
@@ -218,7 +226,7 @@ public class GhostScript : CharacterScript
         return shortestNode;
     }
 
-    private void GeneratePath(Vector2 sourcePos, Vector2 targetPos)
+    private void GeneratePathListWithSearchingAlgo(Vector2 sourcePos, Vector2 targetPos)
     {
         if (searchingAlgo == algo.dijkstras)
         {
@@ -242,7 +250,7 @@ public class GhostScript : CharacterScript
 
         //have targetPos = function and paths = moveScr.whatever in a new virtual function that can be overrided by the 
 
-        GeneratePath(sourcePos, targetPos);
+        GeneratePathListWithSearchingAlgo(sourcePos, targetPos);
         //pathfind to the new targetPos
 
     }
@@ -318,7 +326,7 @@ public class GhostScript : CharacterScript
 
 
         ghostBody.Play("vulnerable");
-        GhostPatrol(delta);
+
 
         //if ghost collides with pacman, kill ghost, give pacman like 100 points and increase multiplier
 
@@ -337,14 +345,12 @@ public class GhostScript : CharacterScript
             //GD.Print("CHASE STATE-----------------------------------------");
             GhostChase(delta);
         }
-        else if (ghostState == states.vulnerable)
+
+        if (ghostIsVulnerable)
         {
             GhostVulnerable(delta);
-            //GD.Print("VULNERABLE STATE-----------------------------------------");
-
-
-
         }
+
     }
 
     public virtual void UpdateTarget()
@@ -365,7 +371,7 @@ public class GhostScript : CharacterScript
         }
         hasIntersectedBefore = true;
 
-        if ((area.Name == "PacmanArea") && (ghostState == states.vulnerable))
+        if ((area.Name == "PacmanArea") && (ghostIsVulnerable == true))
         {
             game.score += (int)(baseScore * game.scoreMultiplier); //add 100*mult to gamescript.score
             game.scoreMultiplier += 0.25f; //increase mult by 0.25
@@ -382,7 +388,7 @@ public class GhostScript : CharacterScript
 
     private void _OnPowerPelletActivated()
     {
-        EnterState(states.vulnerable);
+        EnterGhostVulnerable();
         pacman.EnableInvincibility(vulnerableTimer.TimeLeft);
     }
 
@@ -394,12 +400,6 @@ public class GhostScript : CharacterScript
         EnterState(states.chase); //chase towards new target
 
         chaseTimer.Start(decoyLengthTime);
-
-        if (chaseTimer.TimeLeft == 0)
-        {
-            defaultTarget = true; //after chasing new target for decoylengthtime, chase default target
-        }
-
     }
 
     private void _OnRandomizerPowerupActivated()
@@ -407,6 +407,11 @@ public class GhostScript : CharacterScript
         Random rnd = new Random();
         int algoLength = Enum.GetNames(typeof(algo)).Length;
         searchingAlgo = (algo)rnd.Next(0, algoLength);
+    }
+
+    private void _OnChangeSpeedModifierActivated(float newSpeedModifier)
+    {
+        speedModifier = newSpeedModifier;
     }
 
 
