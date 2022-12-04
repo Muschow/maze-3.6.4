@@ -14,10 +14,7 @@ public class LoginScript : Control
     private LineEdit passwordInput;
     private Label notification;
     private Node database; //this is in gdscript
-
     private Globals global;
-
-    private string salt;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -45,8 +42,8 @@ public class LoginScript : Control
         //add salt and pepper to password and hash, check if hash = hash in database. 
         //If so, login, else error
 
-        GD.Print("login button pressed");
-        GD.Print(usernameInput.Text);
+        GD.Print("login button pressed"); //remember to commect these out
+        GD.Print(usernameInput.Text);   //debug
         GD.Print(passwordInput.Text);
         //put code here
 
@@ -96,12 +93,12 @@ public class LoginScript : Control
             }
             else
             {
-                GenerateSalt(20); //if not, generate salt and do password + salt + pepper & hash it
-                string password = passwordInput.Text + salt + pepper;
+                string newSalt = GenerateSalt(20); //if not, generate salt and do password + salt + pepper & hash it
+                string password = passwordInput.Text + newSalt + pepper;
                 password = password.SHA256Text();
 
 
-                string[] newRecordParam = new string[] { usernameInput.Text, password, salt };
+                string[] newRecordParam = new string[] { usernameInput.Text, password, newSalt };
                 database.Call("queryDBwithParameters", "INSERT INTO PlayerInfo (Username, Password, Salt) VALUES (?, ?, ?);", newRecordParam);
                 //add new record to playerInfo, with username, password and salt
             }
@@ -153,13 +150,14 @@ public class LoginScript : Control
         return false;
     }
 
-    private void GenerateSalt(int saltLength)
+    private string GenerateSalt(int saltLength)
     {
+        string salt = null;
+
         string lowerLetters = "abcdefghijklmnopqrstuvwxyz";
         string upperLetters = lowerLetters.ToUpper();
         string numbers = "0123456789";
         string symbols = "¬`!£$%^&*()_+}{~#@:?><m,./;[]";
-
 
         string valid = lowerLetters + upperLetters + numbers + symbols;
 
@@ -168,9 +166,11 @@ public class LoginScript : Control
         for (int i = 0; i < saltLength; i++)
         {
             salt = salt + valid[rnd.Next(0, valid.Length)];
+
         }
 
         GD.Print("salt: ", salt);
+        return salt;
     }
 
     private bool ContainsInvalidWords(string input)
