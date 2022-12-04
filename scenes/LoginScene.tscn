@@ -33,19 +33,21 @@ margin_left = 360.0
 margin_top = 128.0
 margin_right = 632.0
 margin_bottom = 159.0
+max_length = 10
 expand_to_text_length = true
 clear_button_enabled = true
-placeholder_text = "Enter Username:"
+placeholder_text = "Enter Username: (Max 10)"
 
 [node name="PasswordInput" type="LineEdit" parent="CanvasLayer/Panel"]
 margin_left = 360.0
 margin_top = 168.0
 margin_right = 632.0
 margin_bottom = 199.0
+max_length = 20
 secret = true
 expand_to_text_length = true
 clear_button_enabled = true
-placeholder_text = "Enter Password:"
+placeholder_text = "Enter Password: (Max 20)"
 
 [node name="LoginButton" type="Button" parent="CanvasLayer/Panel"]
 margin_left = 360.0
@@ -61,12 +63,18 @@ margin_right = 629.0
 margin_bottom = 252.0
 text = "Create Account"
 
-[node name="ErrorMessage" type="Label" parent="CanvasLayer/Panel"]
-margin_left = 368.0
-margin_top = 280.0
-margin_right = 408.0
-margin_bottom = 294.0
-text = "Incorrect Username Or Password Given"
+[node name="Notification" type="Label" parent="CanvasLayer/Panel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -136.0
+margin_top = -24.0
+margin_right = 125.0
+margin_bottom = 169.0
+text = "Username must be <10 char and password <20"
+align = 1
+autowrap = true
 
 [connection signal="pressed" from="CanvasLayer/Panel/LoginButton" to="." method="_OnLoginButtonPressed"]
 [connection signal="pressed" from="CanvasLayer/Panel/CreateAccountButton" to="." method="_OnCreateAccountButtonPressed"]
