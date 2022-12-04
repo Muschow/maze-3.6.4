@@ -77,7 +77,7 @@ public class LoginScript : Control
                 {
                     var idQuery = database.Call("queryDBwithParameters", "SELECT ID FROM PlayerInfo WHERE Username = ? AND Password = ?;", userParams);
                     global.userId = (int)database.Call("queryValue", idQuery); //grabs the userId
-
+                    GetTree().ChangeScene("res://scenes/Game.tscn");
                     //once logged in, switch scene to main game
                 }
             }

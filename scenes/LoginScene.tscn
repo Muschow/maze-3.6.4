@@ -72,7 +72,9 @@ margin_left = -136.0
 margin_top = -24.0
 margin_right = 125.0
 margin_bottom = 169.0
-text = "Username must be <10 char and password <20"
+text = "test acc: 
+username: bob1 
+password: 123"
 align = 1
 autowrap = true
 
