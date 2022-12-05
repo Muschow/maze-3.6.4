@@ -21,10 +21,12 @@ scale = Vector2( 2.134, 2.134 )
 z_index = 1
 script = ExtResource( 5 )
 lives = 3
+maxLives = 3
 
 [node name="AnimatedSprite" parent="." index="0"]
 frames = SubResource( 1 )
 animation = "walk"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" parent="." index="1"]

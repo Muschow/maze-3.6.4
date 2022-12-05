@@ -33,6 +33,7 @@ public class GameOverScript : Control
     {
         //queue free game and this
         //switch scene to main menu
+        GetTree().ChangeScene("res://scenes/MainMenuScene.tscn");
 
     }
 
