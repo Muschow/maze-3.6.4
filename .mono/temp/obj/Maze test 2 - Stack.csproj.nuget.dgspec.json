@@ -1,20 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj": {}
+    "C:\\Users\\016797\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj": {
+    "C:\\Users\\016797\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj",
+        "projectUniqueName": "C:\\Users\\016797\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj",
         "projectName": "Maze test 2 - Stack",
-        "projectPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\Maze test 2 - Stack.csproj",
-        "packagesPath": "C:\\Users\\mchow\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mchow\\OneDrive\\Documents\\GitHub\\maze-3.6.5\\maze-3.6.4\\.mono\\temp\\obj\\",
+        "projectPath": "C:\\Users\\016797\\Documents\\GitHub\\maze-3.6.4\\Maze test 2 - Stack.csproj",
+        "packagesPath": "C:\\Users\\016797\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\016797\\Documents\\GitHub\\maze-3.6.4\\.mono\\temp\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\mchow\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\016797\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +27,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +45,7 @@
       "frameworks": {
         "net472": {
           "targetAlias": "net472",
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

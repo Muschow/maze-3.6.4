@@ -28,6 +28,7 @@ public class GameScript : Node2D
     private MazeGenerator mazeTm;
     private Node2D mazeContainer;
     private HBoxContainer labelContainer;
+    private Globals global;
 
     //dfnksjdjfsk
 
@@ -85,6 +86,7 @@ public class GameScript : Node2D
         pacman = GetNode<PacmanScript>("Pacman");
         mazeContainer = GetNode<Node2D>("MazeContainer");
         labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
+        global = GetNode<Globals>("/root/Globals");
 
         mazesOnTheScreen++; //remove this if you instance the first maze
 
@@ -108,6 +110,18 @@ public class GameScript : Node2D
 
         //GD.Print("stray nodes");
         //PrintStrayNodes(); //put a post on godot forums on how to fix this and the objects leaks errors
+        if (pacman.lives == 0)
+        {
+            pacman.lives = -1;
+            GameOver();
+        }
+
+    }
+
+    public void GameOver()
+    {
+        global.userScore = score;
+        GetTree().ChangeScene("res://scenes/GameOverScene.tscn");
 
     }
 
