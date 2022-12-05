@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Maze test 2 - Stack"
-run/main_scene="res://scenes/Game.tscn"
+run/main_scene="res://scenes/MainMenuScene.tscn"
 config/icon="res://icon.png"
 
 [autoload]

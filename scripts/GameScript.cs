@@ -88,6 +88,7 @@ public class GameScript : Node2D
         labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
         global = GetNode<Globals>("/root/Globals");
 
+        global.gameWon = false;
         mazesOnTheScreen++; //remove this if you instance the first maze
 
         //PrintTreePretty(); //debug, also you cant really trust this for instances anyway so...
@@ -113,6 +114,12 @@ public class GameScript : Node2D
         if (pacman.lives == 0)
         {
             pacman.lives = -1;
+            GameOver();
+        }
+
+        if (travelDist >= 512)
+        {
+            global.gameWon = true;
             GameOver();
         }
 

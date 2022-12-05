@@ -58,7 +58,9 @@ public class LoginScript : Control
                 string[] usernameParam = new string[] { usernameInput.Text };
                 var saltQuery = database.Call("queryDBwithParameters", "SELECT Salt FROM PlayerInfo WHERE Username = ?;", usernameParam);
                 //this var above is an array of dictoinaries
-                string userSalt = (string)database.Call("returnSalt", saltQuery);
+
+                Godot.Collections.Array returnedSaltArray = (Godot.Collections.Array)database.Call("queryValue", saltQuery); //returns an object, must be cast to array
+                string userSalt = (string)returnedSaltArray[0];
 
                 string password = passwordInput.Text + userSalt + pepper;
                 password = password.SHA256Text();
@@ -73,7 +75,10 @@ public class LoginScript : Control
                 else
                 {
                     var idQuery = database.Call("queryDBwithParameters", "SELECT ID FROM PlayerInfo WHERE Username = ? AND Password = ?;", userParams);
-                    global.userId = (int)database.Call("queryValue", idQuery); //grabs the userId
+
+                    Godot.Collections.Array returnedIdArray = (Godot.Collections.Array)database.Call("queryValue", idQuery);
+                    global.userId = (int)returnedIdArray[0];
+
                     GetTree().ChangeScene("res://scenes/Game.tscn");
                     //once logged in, switch scene to main game
                 }
@@ -100,7 +105,7 @@ public class LoginScript : Control
 
                 string[] newRecordParam = new string[] { usernameInput.Text, password, newSalt };
                 database.Call("queryDBwithParameters", "INSERT INTO PlayerInfo (Username, Password, Salt) VALUES (?, ?, ?);", newRecordParam);
-                //add new record to playerInfo, with username, password and salt
+                //adds new record to playerInfo, with username, password and salt
             }
 
 
@@ -122,7 +127,8 @@ public class LoginScript : Control
     {
         database.Call("printFromQuery", count1QueryResult);
 
-        if ((bool)database.Call("existsInDB", count1QueryResult))
+        Godot.Collections.Array returnedCount1Value = (Godot.Collections.Array)database.Call("queryValue", count1QueryResult);
+        if ((int)returnedCount1Value[0] == 1) //returned count1value is either a 0 or 1, essentially a bool
         {
             return true;
         }

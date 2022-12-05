@@ -21,6 +21,20 @@ script = ExtResource( 3 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 
+[node name="YourScore" type="Label" parent="CanvasLayer/Panel"]
+anchor_left = 0.419355
+anchor_top = 0.0131579
+anchor_right = 0.604839
+anchor_bottom = 0.0921053
+custom_fonts/font = ExtResource( 2 )
+text = "Your Score:
+0"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
 [node name="QuitToMainMenuButon" type="Button" parent="CanvasLayer/Panel"]
 margin_left = 368.0
 margin_top = 560.0
@@ -57,25 +71,252 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -135.0
-margin_top = 45.0
+margin_top = 29.0
 margin_right = 145.0
-margin_bottom = 65.0
+margin_bottom = 49.0
 custom_fonts/font = ExtResource( 2 )
 text = "name--------Score"
 
-[node name="Score" type="Label" parent="CanvasLayer/Panel/Heading"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -127.0
-margin_top = 93.0
-margin_right = 129.0
-margin_bottom = 113.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Control" type="Control" parent="CanvasLayer/Panel/Heading/SubHeading"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -16.0
+margin_bottom = 4.0
+
+[node name="Name0" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 1.2
+anchor_right = 0.285714
+anchor_bottom = 1.725
 custom_fonts/font = ExtResource( 2 )
-text = "asdfghjklm 51232"
+text = "name0"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name1" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 2.0
+anchor_right = 0.285714
+anchor_bottom = 2.525
+custom_fonts/font = ExtResource( 2 )
+text = "name1"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name2" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 2.8
+anchor_right = 0.285714
+anchor_bottom = 3.325
+custom_fonts/font = ExtResource( 2 )
+text = "name2"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name3" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 3.6
+anchor_right = 0.285714
+anchor_bottom = 4.125
+custom_fonts/font = ExtResource( 2 )
+text = "name3"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name4" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 4.4
+anchor_right = 0.285714
+anchor_bottom = 4.925
+custom_fonts/font = ExtResource( 2 )
+text = "name4"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name5" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 5.2
+anchor_right = 0.296296
+anchor_bottom = 5.72632
+margin_bottom = -1.52588e-05
+custom_fonts/font = ExtResource( 2 )
+text = "name5"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name6" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 6.0
+anchor_right = 0.296296
+anchor_bottom = 6.52632
+margin_bottom = -1.52588e-05
+custom_fonts/font = ExtResource( 2 )
+text = "name6"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name7" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 6.8
+anchor_right = 0.296296
+anchor_bottom = 7.32632
+margin_bottom = -1.52588e-05
+custom_fonts/font = ExtResource( 2 )
+text = "name7"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name8" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 7.6
+anchor_right = 0.296296
+anchor_bottom = 8.12632
+margin_bottom = -1.52588e-05
+custom_fonts/font = ExtResource( 2 )
+text = "name8"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Name9" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_top = 8.4
+anchor_right = 0.296296
+anchor_bottom = 8.92632
+margin_bottom = -1.52588e-05
+custom_fonts/font = ExtResource( 2 )
+text = "name9"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score0" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 1.2
+anchor_right = 1.0
+anchor_bottom = 1.725
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score1" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 2.0
+anchor_right = 1.0
+anchor_bottom = 2.525
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score2" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 2.8
+anchor_right = 1.0
+anchor_bottom = 3.325
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score3" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 3.6
+anchor_right = 1.0
+anchor_bottom = 4.125
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score4" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 4.4
+anchor_right = 1.0
+anchor_bottom = 4.925
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score5" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 5.2
+anchor_right = 1.0
+anchor_bottom = 5.725
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score6" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 6.0
+anchor_right = 1.0
+anchor_bottom = 6.525
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score7" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 6.8
+anchor_right = 1.0
+anchor_bottom = 7.325
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score8" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 7.6
+anchor_right = 1.0
+anchor_bottom = 8.125
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Score9" type="Label" parent="CanvasLayer/Panel/Heading/SubHeading/Control"]
+anchor_left = 0.942857
+anchor_top = 8.4
+anchor_right = 1.0
+anchor_bottom = 8.925
+grow_horizontal = 0
+custom_fonts/font = ExtResource( 2 )
+text = "0"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [connection signal="pressed" from="CanvasLayer/Panel/QuitToMainMenuButon" to="." method="_OnQuitToMainMenuButtonPressed"]
 [connection signal="pressed" from="CanvasLayer/Panel/RestartButton" to="." method="_OnRestartButtonPressed"]
