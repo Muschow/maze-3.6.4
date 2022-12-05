@@ -44,7 +44,6 @@ public class MazeGenerator : TileMap
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
     public override void _EnterTree()
     {
-        //height = (int)GD.RandRange(19, 38);
         CorrectMazeSize(); //makes width and height odd when maze enters scene tree (before ready is called)
     }
     //Called when the node enters the scene tree for the first time.

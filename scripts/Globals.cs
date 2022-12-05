@@ -4,6 +4,6 @@ using System;
 public class Globals : Node
 {
 
-    //placeholder
+    public int userId;
 
 }

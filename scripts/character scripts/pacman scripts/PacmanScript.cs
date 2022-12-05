@@ -34,15 +34,19 @@ public class PacmanScript : CharacterScript
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
-        if (GameScript.movementEnabled)
+
+
+        GetInput();
+        Vector2 masVector = Move(moveDir, speed);
+        MoveAnimManager(masVector);
+
+        speed = baseSpeed * GameScript.gameSpeed;
+
+        UpdateTravelDistance();
+
+        if (Input.IsActionJustPressed("ui_accept"))
         {
-            GetInput();
-            Vector2 masVector = Move(moveDir, speed);
-            MoveAnimManager(masVector);
-
-            speed = baseSpeed * GameScript.gameSpeed;
-
-            UpdateTravelDistance();
+            GD.Print("pacman speed ", speed);
         }
 
     }
@@ -115,7 +119,7 @@ public class PacmanScript : CharacterScript
         GetNode<Timer>("PacmanArea/InvincibleTimer").Start(time);
     }
 
-    public void _OnInvincibleTimerTimeout()
+    private void _OnInvincibleTimerTimeout()
     {
         invincible = false; //disable invincibility
     }
