@@ -82,6 +82,8 @@ public class GameScript : Node2D
     {
         GD.Print("Game ready");
         //put all the maze crap in a mazeInit function
+        StartNewGame();
+
         mazeTm = GetNode<MazeGenerator>("MazeContainer/Maze/MazeTilemap");
         pacman = GetNode<PacmanScript>("Pacman");
         mazeContainer = GetNode<Node2D>("MazeContainer");
