@@ -66,7 +66,7 @@ public class GhostScript : CharacterScript
         moveScr.adjList = mazeTm.adjacencyList;
         moveScr.nodeList = mazeTm.nodeList;
 
-        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * 32 + new Vector2(16, 16); //spawn ghost on top left of current maze
+        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * MazeGenerator.CELLSIZE + MazeGenerator.halfCellSize; //spawn ghost on top left of current maze
         ghostBody.Modulate = ghostColour;
 
         FindNewPath(source, target);
@@ -257,13 +257,13 @@ public class GhostScript : CharacterScript
 
     private void MoveToAndValidatePos(float delta)
     {
-        if (Position.IsEqualApprox(mazeTm.MapToWorld(paths[pathCounter]) + new Vector2(16, 16))) //must use IsEqualApprox with vectors due to floating point precision errors instead of ==
+        if (Position.IsEqualApprox(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize)) //must use IsEqualApprox with vectors due to floating point precision errors instead of ==
         {
             pathCounter++; //if ghost position == node position then increment
         }
         else
         {
-            movementV = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + new Vector2(16, 16), delta * speed); //if not, move toward node position
+            movementV = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize, delta * speed); //if not, move toward node position
             Position = movementV;
             MoveAnimManager(paths[pathCounter] - mazeTm.WorldToMap(Position));
             // GD.Print("Position ", Position);
@@ -291,6 +291,10 @@ public class GhostScript : CharacterScript
             {
                 FindNewPath(source, target);
             }
+        }
+        else
+        {
+            EnterState(states.patrol);
         }
 
     }

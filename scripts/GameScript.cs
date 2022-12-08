@@ -70,8 +70,8 @@ public class GameScript : Node2D
         labelContainer.GetNode<Label>("DistCounter").Text = "Dist:" + travelDist + " ";
         labelContainer.GetNode<Label>("ScoreCounter").Text = "Score:" + score + " ";
         labelContainer.GetNode<Label>("MultiplierCounter").Text = "Mult:" + scoreMultiplier + "x ";
-        labelContainer.GetNode<Button>("IncLives").Text = "+1 Life:" + upgradeLivesCost;
-        labelContainer.GetNode<Button>("IncMaxLives").Text = "+1 Max Lives:" + upgradeLivesCost;
+        labelContainer.GetNode<Button>("IncLives").Text = "[G] +1 Life:" + upgradeLivesCost;
+        labelContainer.GetNode<Button>("IncMaxLives").Text = "[H] +1 Max Lives:" + upgradeLivesCost;
     }
 
     public override void _EnterTree()
