@@ -158,6 +158,11 @@ public class GameScript : Node2D
         upgradeLivesCost += 500;
     }
 
+    private void StartNewGame()
+    {
+        gameSpeed = 1;
+    }
+
 
 
 }
