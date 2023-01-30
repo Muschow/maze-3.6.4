@@ -8,7 +8,7 @@ public class PacmanScript : CharacterScript
     private RayCastScript raycasts;
     private Vector2 nextDir = Vector2.Zero;
     private Vector2 moveDir = Vector2.Zero;
-    private PackedScene[] inventory = new PackedScene[3];
+    private PackedScene[] inventory = new PackedScene[3]; //delete this, its useless
     private GameScript game;
     [Export] public int lives = 3;
     [Export] public int maxLives = 3;
