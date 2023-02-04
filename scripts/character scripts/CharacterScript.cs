@@ -4,15 +4,9 @@ using System.Collections.Generic;
 
 public abstract class CharacterScript : KinematicBody2D
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    // Called when the node enters the scene tree for the first time.
     public float speed;
     protected float baseSpeed = 100;
     protected MazeGenerator mazeTm;
-
     protected AnimatedSprite animatedSprite;
 
     protected void PlayAndPauseAnim(Vector2 masVector) //requires AnimatedSprite reference
@@ -53,16 +47,4 @@ public abstract class CharacterScript : KinematicBody2D
             animatedSprite.RotationDegrees = 180;
         }
     }
-
-    //ready and process functions are useless here as Character Scene will never show up in the scene tree.
-    // public override void _Ready()
-    // {
-
-    // }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
 }
