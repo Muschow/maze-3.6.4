@@ -8,7 +8,6 @@ public class PacmanScript : CharacterScript
     private RayCastScript raycasts;
     private Vector2 nextDir = Vector2.Zero;
     private Vector2 moveDir = Vector2.Zero;
-    private PackedScene[] inventory = new PackedScene[3]; //delete this, its useless
     private GameScript game;
     [Export] public int lives = 3;
     [Export] public int maxLives = 3;
@@ -22,8 +21,6 @@ public class PacmanScript : CharacterScript
         raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
         game = GetNode<GameScript>("/root/Game");
 
-
-
         //put all the labels with initial values in a function like this and call the function in ready
 
         Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 2) * 32 + new Vector2(16, 16);
@@ -34,8 +31,6 @@ public class PacmanScript : CharacterScript
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
-
-
         GetInput();
         Vector2 masVector = Move(moveDir, speed);
         MoveAnimManager(masVector);
@@ -76,9 +71,6 @@ public class PacmanScript : CharacterScript
         }
         //CheckCollision(); //merge checkCollision code with GetInput
         //moveVelocity = moveDir * speed;
-
-
-
     }
 
 
@@ -108,7 +100,6 @@ public class PacmanScript : CharacterScript
         {
             GD.Print("pacman hit killwall, game over");
             game.GameOver();
-            //Call GameOver() function
         }
 
 
@@ -135,8 +126,4 @@ public class PacmanScript : CharacterScript
             game.travelDist++;
         }
     }
-
-
-
-
 }

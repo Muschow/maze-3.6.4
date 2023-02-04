@@ -11,11 +11,8 @@ public class ClydeScript : GhostScript
 
     private KinematicBody2D firstGhost;
 
-
     public override void UpdateTarget()
     {
-
-
         firstGhost = GetParent().GetChildOrNull<KinematicBody2D>(0);
         if (firstGhost == null)
         {
@@ -30,20 +27,4 @@ public class ClydeScript : GhostScript
     //clyde constantly gets 1st child of enemycontainer (random ghost)
     //if there is a child and its not null,
     //clyde finds closest node at the midpoint between that child at ready
-
-
-
-    // // Called when the node enters the scene tree for the first time.
-    // public override void _Ready()
-    // {
-    //     base._Ready();
-    //     
-
-    // }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
 }

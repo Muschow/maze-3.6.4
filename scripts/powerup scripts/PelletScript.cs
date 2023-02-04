@@ -3,12 +3,7 @@ using System;
 
 public class PelletScript : ItemPickupScript
 {
-
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    PelletScript()
+    public PelletScript()
     {
         baseScore = 10;
     }
@@ -17,6 +12,4 @@ public class PelletScript : ItemPickupScript
     {
         QueueFree();
     }
-
-
 }

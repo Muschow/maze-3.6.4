@@ -28,19 +28,16 @@ public class MazeGenerator : TileMap
     public List<Vector2> nodeList = new List<Vector2>(); //for nodes,maybe get rid of this to be honest
     public LinkedList<Tuple<Vector2, int>>[] adjacencyList;
 
-    //-------------------------------------------------End of Adjacency Matrix/List properties-----------------------------------------------------------
-
     //-------------------------------------------------------------GetNodes------------------------------------------------------------------------------
     private Node2D powerupContainer;
     private Node2D powerupFactory;
     private TileMap nodeTilemap;
     private GameScript gameScr;
-    //----------------------------------------------------------End of GetNodes--------------------------------------------------------------------------
 
     //-----------------------------------------------------------PackedScenes---------------------------------------------------------------------------
     PackedScene pelletScene = GD.Load<PackedScene>("res://scenes/Pellet.tscn");
     PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/powerup scenes/PowerupFactory.tscn");
-    //--------------------------------------------------------End of PackedScenes-----------------------------------------------------------------------
+
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
     public override void _EnterTree()
     {
@@ -71,15 +68,6 @@ public class MazeGenerator : TileMap
         GD.Print("nodeList Count: " + nodeList.Count);
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    // public override void _Process(float delta)
-    // {
-
-    // }
-
-
-
-    //-----------------------------------------------------------End of ready and process-----------------------------------------------------------
     //------------------------------------------------------Instancing Scenes Functions----------------------------------------------------------------
     private void AddPellet(Vector2 spawnPosition)
     {
@@ -98,8 +86,6 @@ public class MazeGenerator : TileMap
             powerup.Position = SetRandomSpawnOnPath();
         }
     }
-
-    //---------------------------------------------------End of instancing scene functions-------------------------------------------------------------
 
     //---------------------------------------------------Maze Generator Helper Functions-----------------------------------------------------------------
     private void CorrectMazeSize()
@@ -147,7 +133,6 @@ public class MazeGenerator : TileMap
 
     private void FixDeadEnds(Vector2 currentV)
     {
-
         bool complete = false;
 
         for (int i = 0; i < directions.Length; i++)
@@ -176,8 +161,6 @@ public class MazeGenerator : TileMap
 
     private void PrepMazeForJoin(int numHoles) //dependancy on gameScr.Get(mazesOnTheScreen)
     {
-
-
         Random rnd = new Random();
         int numUsedCells = 0;
 
@@ -241,7 +224,6 @@ public class MazeGenerator : TileMap
             GD.Print("found bad node");
         }
     }
-    //---------------------------------------------------End of Maze Generation Helper functions-----------------------------------------------------------
 
     //------------------------------------------------------Actual Maze Generation functions---------------------------------------------------------------
     private void IterativeDFSInit()
@@ -323,8 +305,6 @@ public class MazeGenerator : TileMap
             }
         }
     }
-
-    //--------------------------------------------------End of Actual Maze Generation functions-----------------------------------------------------------------
 
     //------------------------------------------------------Adjacency Matrix/List stuff-------------------------------------------------------------------------
 
@@ -477,7 +457,7 @@ public class MazeGenerator : TileMap
             Console.WriteLine();
         }
     }
-    //-------------------------------End of Adjacency Matrix/List stuff-----------------------------------------------------------------------------
+
 
     //--------------------------------------Other functions --------------------------------------------------------------------
 
@@ -503,9 +483,13 @@ public class MazeGenerator : TileMap
         return spawnLoc;
     }
 
-
-
     //--------------------------------------------End of Other Functions--------------------------------------------------------------
 
+    public override void _ExitTree()
+    {
+        powerupFactory.QueueFree(); //powerupfactory is never added to scene tree so must be explcicity freed
+        GetParent().QueueFree();
+        GD.Print("mazegen parent queuefree");
+    }
 
 }

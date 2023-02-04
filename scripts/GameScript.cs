@@ -5,7 +5,7 @@ public class GameScript : Node2D
 {
 
     public const int INFINITY = 9999;
-    public static float gameSpeed = 1;
+    public static float gameSpeed;
     [Export] private float gameSpeedInc = 0.20f;
     private int upgradeLivesCost = 500;
 
@@ -29,13 +29,54 @@ public class GameScript : Node2D
     private Node2D mazeContainer;
     private HBoxContainer labelContainer;
     private Globals global;
-
-    //dfnksjdjfsk
-
-
+    PelletScript pellet = new PelletScript();
     PackedScene mazeScene = GD.Load<PackedScene>("res://scenes/Maze.tscn");
+    public override void _EnterTree()
+    {
+        gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
+    }
+    public override void _Ready()
+    {
+        GD.Print("Game ready");
+        //put all the maze crap in a mazeInit function
+        StartNewGame();
 
-    // Called when the node enters the scene tree for the first time.
+        mazeTm = GetNode<MazeGenerator>("MazeContainer/Maze/MazeTilemap");
+        pacman = GetNode<PacmanScript>("Pacman");
+        mazeContainer = GetNode<Node2D>("MazeContainer");
+        labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
+        global = GetNode<Globals>("/root/Globals");
+
+        global.gameWon = false;
+        mazesOnTheScreen++; //remove this if you instance the first maze
+
+        //PrintTreePretty(); //debug, also you cant really trust this for instances anyway so...
+        //maybe have a function with alll the intial label states and put function in ready
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(float delta)
+    {
+        if (Math.Floor(pacman.Position.y / 32) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
+        {
+            GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
+            InstanceAndRemoveMazes();
+        }
+        UpdateLabels();
+
+        if (pacman.lives == 0)
+        {
+            pacman.lives = -1;
+            GameOver();
+        }
+
+        if (travelDist >= 512)
+        {
+            global.gameWon = true;
+            GameOver();
+        }
+
+    }
     private void InstanceAndRemoveMazes()
     {
         //store all the getnodes, MazeGenerator mazeG = new MazeGenerator() stuff in here instead of in the ready function for better encapsulation
@@ -63,7 +104,6 @@ public class GameScript : Node2D
 
     }
 
-
     private void UpdateLabels()
     {
         labelContainer.GetNode<Label>("LifeCounter").Text = "Lives:" + pacman.lives + "/" + pacman.maxLives;
@@ -72,59 +112,6 @@ public class GameScript : Node2D
         labelContainer.GetNode<Label>("MultiplierCounter").Text = "Mult:" + scoreMultiplier + "x ";
         labelContainer.GetNode<Button>("IncLives").Text = "[G] +1 Life:" + upgradeLivesCost;
         labelContainer.GetNode<Button>("IncMaxLives").Text = "[H] +1 Max Lives:" + upgradeLivesCost;
-    }
-
-    public override void _EnterTree()
-    {
-        gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
-    }
-    public override void _Ready()
-    {
-        GD.Print("Game ready");
-        //put all the maze crap in a mazeInit function
-        StartNewGame();
-
-        mazeTm = GetNode<MazeGenerator>("MazeContainer/Maze/MazeTilemap");
-        pacman = GetNode<PacmanScript>("Pacman");
-        mazeContainer = GetNode<Node2D>("MazeContainer");
-        labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
-        global = GetNode<Globals>("/root/Globals");
-
-        global.gameWon = false;
-        mazesOnTheScreen++; //remove this if you instance the first maze
-
-        //PrintTreePretty(); //debug, also you cant really trust this for instances anyway so...
-
-
-
-
-        //maybe have a function with alll the intial label states and put function in ready
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta)
-    {
-        if (Math.Floor(pacman.Position.y / 32) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
-        {
-            GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
-            InstanceAndRemoveMazes();
-        }
-        UpdateLabels();
-
-        //GD.Print("stray nodes");
-        //PrintStrayNodes(); //put a post on godot forums on how to fix this and the objects leaks errors
-        if (pacman.lives == 0)
-        {
-            pacman.lives = -1;
-            GameOver();
-        }
-
-        if (travelDist >= 512)
-        {
-            global.gameWon = true;
-            GameOver();
-        }
-
     }
 
     public void GameOver()
@@ -140,9 +127,7 @@ public class GameScript : Node2D
         {
             pacman.lives++;
             PurchaseLifeUpgrade();
-
         }
-
     }
 
     private void _OnIncMaxLivesButtonPressed()
@@ -160,11 +145,9 @@ public class GameScript : Node2D
         upgradeLivesCost += 500;
     }
 
-    private void StartNewGame()
+    private void StartNewGame() //reset static variables or anything else that isnt automatically reset
     {
+        score = 0 - pellet.baseScore; //as pacman spawns on a pellet, remove 1 instance of pellet score
         gameSpeed = 1;
     }
-
-
-
 }

@@ -3,7 +3,7 @@ using System;
 
 public abstract class ItemPickupScript : Sprite
 {
-    [Export] protected int baseScore = 100;
+    [Export] public int baseScore = 100;
     protected GameScript game;
 
 
@@ -11,15 +11,7 @@ public abstract class ItemPickupScript : Sprite
     public override void _Ready()
     {
         game = GetNode<GameScript>("/root/Game");
-
     }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
-
 
     public void _OnItemAreaEntered(Area area)
     {
@@ -30,8 +22,5 @@ public abstract class ItemPickupScript : Sprite
             ItemAbility();
         }
     }
-
-    //Must call QueueFree somewhere to delete the node
-
     public abstract void ItemAbility();
 }

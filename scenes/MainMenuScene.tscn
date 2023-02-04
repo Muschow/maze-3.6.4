@@ -69,5 +69,25 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
+[node name="Instructions" type="Label" parent="CanvasLayer/Panel"]
+margin_left = 296.0
+margin_top = 384.0
+margin_right = 693.0
+margin_bottom = 602.0
+text = "HOW TO PLAY:
+-Reach a vertical distance of 512 to win.
+-Ice cube powerup slows down speed of ghosts
+-Green pacman changes the ghosts targets to its location
+-Red question mark randomises ghosts pathfinding algorithms
+-Killing a ghost increases multiplier, losing a life resets it
+
+GHOST TARGETS:
+-Red ghost targets you
+-Pink ghost targets closest node to you
+-Blue ghost moves randomly
+-Orange ghost targets between 2 other ghosts
+"
+align = 1
+
 [connection signal="pressed" from="CanvasLayer/Panel/PlayButton" to="." method="_OnPlayButtonPressed"]
 [connection signal="pressed" from="CanvasLayer/Panel/QuitButton" to="." method="_OnQuitButtonPressed"]

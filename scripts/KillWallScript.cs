@@ -23,10 +23,7 @@ public class KillWallScript : Sprite
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-
         MoveKillWall(delta);
-
-
     }
 
     private void MoveKillWall(float delta)

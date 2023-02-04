@@ -2,7 +2,6 @@
 
 [ext_resource path="res://scripts/character scripts/pacman scripts/RayCastScript.cs" type="Script" id=1]
 
-
 [node name="RayCasts" type="Node2D"]
 script = ExtResource( 1 )
 

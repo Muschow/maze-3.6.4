@@ -28,7 +28,7 @@ collision_mask = 1
 
 [node name="DebugCamera(check current)" type="Camera2D" parent="Pacman"]
 scale = Vector2( 0.468604, 0.468604 )
-zoom = Vector2( 3, 3 )
+zoom = Vector2( 2, 5 )
 
 [node name="MazeContainer" parent="." instance=ExtResource( 2 )]
 

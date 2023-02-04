@@ -417,8 +417,5 @@ public class GhostScript : CharacterScript
     {
         speedModifier = newSpeedModifier;
     }
-
-
-
 }
 

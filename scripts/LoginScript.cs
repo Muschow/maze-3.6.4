@@ -28,13 +28,6 @@ public class LoginScript : Control
 
 
     }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
-
     private void _OnLoginButtonPressed()
     {
         //login: if username and password not empty and not sql injection, look in database 
@@ -107,11 +100,7 @@ public class LoginScript : Control
                 database.Call("queryDBwithParameters", "INSERT INTO PlayerInfo (Username, Password, Salt) VALUES (?, ?, ?);", newRecordParam);
                 //adds new record to playerInfo, with username, password and salt
             }
-
-
-
         }
-
     }
 
     private object IsUsernameInDBQuery() //combine with exists in db to get useful output
@@ -195,11 +184,6 @@ public class LoginScript : Control
         return false;
 
     }
-
-
-
-
-
     //when user clicks login, check their username and grab their salt from databse,
     //then add salt + pepper to password, then check if hashed password == database password
     //if so, then login, otherwise error
