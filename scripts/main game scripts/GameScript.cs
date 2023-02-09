@@ -38,16 +38,10 @@ public class GameScript : Node2D
     public override void _Ready()
     {
         GD.Print("Game ready");
-        //put all the maze crap in a mazeInit function
+
+
+        GetNodes();
         StartNewGame();
-
-        mazeTm = GetNode<MazeGenerator>("MazeContainer/Maze/MazeTilemap");
-        pacman = GetNode<PacmanScript>("Pacman");
-        mazeContainer = GetNode<Node2D>("MazeContainer");
-        labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
-        global = GetNode<Globals>("/root/Globals");
-
-        global.gameWon = false;
         mazesOnTheScreen++; //remove this if you instance the first maze
 
         //PrintTreePretty(); //debug, also you cant really trust this for instances anyway so...
@@ -76,6 +70,15 @@ public class GameScript : Node2D
             GameOver();
         }
 
+    }
+
+    private void GetNodes()
+    {
+        mazeTm = GetNode<MazeGenerator>("MazeContainer/Maze/MazeTilemap");
+        pacman = GetNode<PacmanScript>("Pacman");
+        mazeContainer = GetNode<Node2D>("MazeContainer");
+        labelContainer = GetNode<HBoxContainer>("CanvasLayer/HBoxContainer");
+        global = GetNode<Globals>("/root/Globals");
     }
     private void InstanceAndRemoveMazes()
     {
@@ -149,5 +152,6 @@ public class GameScript : Node2D
     {
         score = 0 - pellet.baseScore; //as pacman spawns on a pellet, remove 1 instance of pellet score
         gameSpeed = 1;
+        global.gameWon = false;
     }
 }

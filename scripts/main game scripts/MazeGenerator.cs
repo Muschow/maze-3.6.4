@@ -49,10 +49,8 @@ public class MazeGenerator : TileMap
         GD.Print("mazegen ready");
 
         GD.Randomize();
+        GetNodes();
 
-        gameScr = GetNode<GameScript>("/root/Game");
-        nodeTilemap = GetParent().GetNode<TileMap>("NodeTilemap");
-        powerupContainer = GetParent().GetNode<Node2D>("PowerupContainer");
         powerupFactory = (Node2D)powerupFactoryScene.Instance();
 
 
@@ -66,6 +64,13 @@ public class MazeGenerator : TileMap
         AddRandomPowerups();
 
         GD.Print("nodeList Count: " + nodeList.Count);
+    }
+
+    private void GetNodes()
+    {
+        gameScr = GetNode<GameScript>("/root/Game");
+        nodeTilemap = GetParent().GetNode<TileMap>("NodeTilemap");
+        powerupContainer = GetParent().GetNode<Node2D>("PowerupContainer");
     }
 
     //------------------------------------------------------Instancing Scenes Functions----------------------------------------------------------------

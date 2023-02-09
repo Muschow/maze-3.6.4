@@ -5,35 +5,26 @@ using System.Collections.Generic;
 public class GhostScript : CharacterScript
 {
 
-    private Movement moveScr = new Movement();
-    private List<Vector2> paths;
-    protected PacmanScript pacman;
-    private TileMap nodeTilemap;
-    private Globals globals;
-    private GameScript game;
-    private int pathCounter = 0;
-    private bool recalculate = false; //used for ghostchase and timer timeout
+    //-----------------------ghost properties----------------------
     private int baseScore = 500;
-    Vector2 movementV;
-    protected Timer chaseTimer;
-    protected Timer patrolTimer;
-    protected Timer vulnerableTimer;
-    protected Timer resetChasePathTimer;
     private float speedModifier = 1;
-    protected Vector2 target;
+
+    //-----------------------ghost bools----------------------------
+    private bool recalculate = false; //used for ghostchase and timer timeout
     private bool defaultTarget = true;
     public bool ghostIsVulnerable = false;
-    protected Vector2 source;
+
+    //----------------------------------ghost components------------
     protected AnimatedSprite ghostBody;
     protected AnimatedSprite ghostEyes;
     protected Color ghostColour = Colors.White;
+
+    //----------------------------------ghost states----------------
     protected enum states
     {
         patrol,
         chase
     }
-    protected states ghostState = states.patrol; //initialise ghost state to patrol. Timer randomly switches states from patrol to chase and vice versa
-
     protected enum algo
     {
         dijkstras,
@@ -41,27 +32,36 @@ public class GhostScript : CharacterScript
         bfs,
     }
     protected algo searchingAlgo = algo.dijkstras;
+    protected states ghostState = states.patrol; //initialise ghost state to patrol. Timer randomly switches states from patrol to chase and vice versa
 
+    //-------------------------movement---------------------------------
+    private Movement moveScr = new Movement();
+    private List<Vector2> paths;
+    protected Vector2 target;
+    protected Vector2 source;
+    private Vector2 movementV;
+    private int pathCounter = 0;
+
+    //---------------------------------Timers----------------------------
+    protected Timer chaseTimer;
+    protected Timer patrolTimer;
+    protected Timer vulnerableTimer;
+    protected Timer resetChasePathTimer;
+
+    //------------------------other scenes--------------------------------
+    protected PacmanScript pacman;
+    private TileMap nodeTilemap;
+    private Globals globals;
+    private GameScript game;
+
+    //--------------------------------------------------------------------
 
     //As GhostScript is a base class, it will not be in the scene tree.
-    // Called when the node enters the scene tree for the first time.
-
     public override void _Ready()
     {
         GD.Print("ghostscript ready");
 
-        mazeTm = GetParent().GetParent().GetNode<MazeGenerator>("MazeTilemap");
-        nodeTilemap = GetParent().GetParent().GetNode<TileMap>("NodeTilemap");
-        pacman = GetNode<PacmanScript>("/root/Game/Pacman");
-        globals = GetNode<Globals>("/root/Globals");
-        game = GetNode<GameScript>("/root/Game");
-
-        resetChasePathTimer = GetNode<Timer>("ResetChasePath");
-        chaseTimer = GetNode<Timer>("ChaseTimer");
-        patrolTimer = GetNode<Timer>("PatrolTimer");
-        vulnerableTimer = GetNode<Timer>("VulnerableTimer");
-        ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
-        ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
+        GetNodes();
 
         moveScr.adjList = mazeTm.adjacencyList;
         moveScr.nodeList = mazeTm.nodeList;
@@ -104,7 +104,27 @@ public class GhostScript : CharacterScript
         game.Connect("RandomizerPowerupActivated", this, "_OnRandomizerPowerupActivated");
         game.Connect("ChangeSpeedModifier", this, "_OnChangeSpeedModifierActivated");
     }
-    protected override void MoveAnimManager(Vector2 masVector)
+
+    private void GetNodes()
+    {
+        //Other scenes--------
+        mazeTm = GetParent().GetParent().GetNode<MazeGenerator>("MazeTilemap");
+        nodeTilemap = GetParent().GetParent().GetNode<TileMap>("NodeTilemap");
+        pacman = GetNode<PacmanScript>("/root/Game/Pacman");
+        globals = GetNode<Globals>("/root/Globals");
+        game = GetNode<GameScript>("/root/Game");
+
+        //Timers--------------
+        resetChasePathTimer = GetNode<Timer>("ResetChasePath");
+        chaseTimer = GetNode<Timer>("ChaseTimer");
+        patrolTimer = GetNode<Timer>("PatrolTimer");
+        vulnerableTimer = GetNode<Timer>("VulnerableTimer");
+
+        //Ghost components----
+        ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
+        ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
+    }
+    protected override void MoveAnimManager(Vector2 masVector) //had to override as ghosts use differnt sprites whereas pacman just rotates
     {
         masVector = masVector.Normalized().Round();
 

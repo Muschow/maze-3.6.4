@@ -31,6 +31,6 @@ func queryValue(query_result_with_1_item) -> Array: #returns the value of those 
 			valueArray.append(query_result_with_1_item[i][keys])
 	
 	return valueArray
-			 #hopefully returns an array of values
+			 #returns an array of values
 
 

@@ -17,9 +17,7 @@ public class PacmanScript : CharacterScript
     public override void _Ready()
     {
         GD.Print("pacman ready");
-        mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
-        raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
-        game = GetNode<GameScript>("/root/Game");
+        GetNodes();
 
         //put all the labels with initial values in a function like this and call the function in ready
 
@@ -44,6 +42,13 @@ public class PacmanScript : CharacterScript
             GD.Print("pacman speed ", speed);
         }
 
+    }
+
+    private void GetNodes()
+    {
+        mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
+        raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
+        game = GetNode<GameScript>("/root/Game");
     }
 
     private void GetInput()

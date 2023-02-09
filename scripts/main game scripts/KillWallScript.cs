@@ -13,8 +13,7 @@ public class KillWallScript : Sprite
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        maze = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
-        game = GetNode<GameScript>("/root/Game/");
+        GetNodes();
         Scale = new Vector2(maze.width + 1, 1);
         Position = new Vector2((maze.width / 2) * MazeGenerator.CELLSIZE, (maze.mazeOriginY + maze.height + 10) * MazeGenerator.CELLSIZE); //centers
 
@@ -24,6 +23,12 @@ public class KillWallScript : Sprite
     public override void _Process(float delta)
     {
         MoveKillWall(delta);
+    }
+
+    private void GetNodes()
+    {
+        maze = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
+        game = GetNode<GameScript>("/root/Game/");
     }
 
     private void MoveKillWall(float delta)

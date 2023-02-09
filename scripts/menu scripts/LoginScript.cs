@@ -19,14 +19,17 @@ public class LoginScript : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        GetNodes();
+    }
+
+    private void GetNodes()
+    {
         usernameInput = GetNode<LineEdit>("CanvasLayer/Panel/UsernameInput");
         passwordInput = GetNode<LineEdit>("CanvasLayer/Panel/PasswordInput");
         notification = GetNode<Label>("CanvasLayer/Panel/Notification");
 
         database = GetNode<Node>("/root/Database");
         global = GetNode<Globals>("/root/Globals");
-
-
     }
     private void _OnLoginButtonPressed()
     {
