@@ -72,7 +72,7 @@ public class LoginScript : Control
                     Godot.Collections.Array returnedIdArray = (Godot.Collections.Array)database.Call("queryValue", idQuery);
                     global.userId = (int)returnedIdArray[0];
 
-                    GetTree().ChangeScene("res://scenes/Game.tscn");
+                    GetTree().ChangeScene("res://scenes/main game scenes/Game.tscn");
                     //once logged in, switch scene to main game
                 }
             }

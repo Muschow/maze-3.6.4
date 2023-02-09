@@ -30,7 +30,7 @@ public class GameScript : Node2D
     private HBoxContainer labelContainer;
     private Globals global;
     PelletScript pellet = new PelletScript();
-    PackedScene mazeScene = GD.Load<PackedScene>("res://scenes/Maze.tscn");
+    PackedScene mazeScene = GD.Load<PackedScene>("res://scenes/main game scenes/Maze.tscn");
     public override void _EnterTree()
     {
         gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
@@ -64,7 +64,7 @@ public class GameScript : Node2D
         }
         UpdateLabels();
 
-        if (pacman.lives == 0)
+        if (pacman.lives <= 0)
         {
             pacman.lives = -1;
             GameOver();
@@ -117,7 +117,7 @@ public class GameScript : Node2D
     public void GameOver()
     {
         global.userScore = score;
-        GetTree().ChangeScene("res://scenes/GameOverScene.tscn");
+        GetTree().ChangeScene("res://scenes/menu scenes/GameOverScene.tscn");
 
     }
 

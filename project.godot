@@ -11,12 +11,12 @@ config_version=4
 [application]
 
 config/name="Maze test 2 - Stack"
-run/main_scene="res://scenes/MainMenuScene.tscn"
+run/main_scene="res://scenes/menu scenes/MainMenuScene.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Globals="*res://scripts/Globals.cs"
+Globals="*res://scripts/main game scripts/Globals.cs"
 Database="*res://scenes/database.tscn"
 
 [display]

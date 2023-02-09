@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/fonts/emulogic.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/fonts/myDynamicFont.tres" type="DynamicFont" id=2]
-[ext_resource path="res://scripts/GameOverScript.cs" type="Script" id=3]
+[ext_resource path="res://scripts/menu scripts/GameOverScript.cs" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 30

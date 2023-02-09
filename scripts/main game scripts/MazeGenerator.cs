@@ -35,7 +35,7 @@ public class MazeGenerator : TileMap
     private GameScript gameScr;
 
     //-----------------------------------------------------------PackedScenes---------------------------------------------------------------------------
-    PackedScene pelletScene = GD.Load<PackedScene>("res://scenes/Pellet.tscn");
+    PackedScene pelletScene = GD.Load<PackedScene>("res://scenes/powerup scenes/Pellet.tscn");
     PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/powerup scenes/PowerupFactory.tscn");
 
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------

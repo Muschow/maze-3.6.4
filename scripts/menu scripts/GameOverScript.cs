@@ -54,11 +54,11 @@ public class GameOverScript : Control
 
     private void _OnQuitToMainMenuButtonPressed()
     {
-        GetTree().ChangeScene("res://scenes/MainMenuScene.tscn");
+        GetTree().ChangeScene("res://scenes/menu scenes/MainMenuScene.tscn");
     }
 
     private void _OnRestartButtonPressed()
     {
-        GetTree().ChangeScene("res://scenes/Game.tscn");
+        GetTree().ChangeScene("res://scenes/main game scenes/Game.tscn");
     }
 }

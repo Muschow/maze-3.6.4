@@ -3,10 +3,10 @@ using System;
 
 public class EnemySpawner : Node2D
 {
-    private PackedScene RedGhost = GD.Load<PackedScene>("res://scenes/ghost scenes/RedGhost.tscn");
-    private PackedScene BlueGhost = GD.Load<PackedScene>("res://scenes/ghost scenes/BlueGhost.tscn");
-    private PackedScene OrangeGhost = GD.Load<PackedScene>("res://scenes/ghost scenes/OrangeGhost.tscn");
-    private PackedScene PinkGhost = GD.Load<PackedScene>("res://scenes/ghost scenes/PinkGhost.tscn");
+    private PackedScene RedGhost = GD.Load<PackedScene>("res://scenes/character scenes/ghost scenes/RedGhost.tscn");
+    private PackedScene BlueGhost = GD.Load<PackedScene>("res://scenes/character scenes/ghost scenes/BlueGhost.tscn");
+    private PackedScene OrangeGhost = GD.Load<PackedScene>("res://scenes/character scenes/ghost scenes/OrangeGhost.tscn");
+    private PackedScene PinkGhost = GD.Load<PackedScene>("res://scenes/character scenes/ghost scenes/PinkGhost.tscn");
     private PackedScene[] ghostArray;
     [Export] private int numGhosts = 4; //export just makes it available to edit in the editor, like [SerializeField]
 

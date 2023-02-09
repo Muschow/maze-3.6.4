@@ -1,10 +1,10 @@
 [gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://scenes/Pacman.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scenes/MazeContainer.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scripts/GameScript.cs" type="Script" id=3]
+[ext_resource path="res://scenes/character scenes/pacman scenes/Pacman.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/main game scenes/MazeContainer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/main game scripts/GameScript.cs" type="Script" id=3]
 [ext_resource path="res://assets/fonts/myDynamicFont.tres" type="DynamicFont" id=4]
-[ext_resource path="res://scenes/KillWall.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/main game scenes/KillWall.tscn" type="PackedScene" id=6]
 
 [sub_resource type="InputEventKey" id=1]
 scancode = 71
