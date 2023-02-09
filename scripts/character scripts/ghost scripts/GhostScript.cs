@@ -39,7 +39,7 @@ public class GhostScript : CharacterScript
     private List<Vector2> paths;
     protected Vector2 target;
     protected Vector2 source;
-    private Vector2 movementV;
+    private Vector2 movementV; //movementV is used to check if a ghost is moving so animation can be played/paused
     private int pathCounter = 0;
 
     //---------------------------------Timers----------------------------
@@ -63,41 +63,37 @@ public class GhostScript : CharacterScript
 
         GetNodes();
 
-        moveScr.adjList = mazeTm.adjacencyList;
+        moveScr.adjList = mazeTm.adjacencyList; //make sure movement has the adjacency list and nodelist of the maze the ghost is on
         moveScr.nodeList = mazeTm.nodeList;
 
-        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * MazeGenerator.CELLSIZE + MazeGenerator.halfCellSize; //spawn ghost on top left of current maze
-        ghostBody.Modulate = ghostColour;
+        //spawn ghost on top left tile of current maze * cellsize so map to world and + halfcellsize so they spawn in the centre
+        Position = new Vector2(1, mazeTm.mazeOriginY + 1) * MazeGenerator.CELLSIZE + MazeGenerator.halfCellSize;
+        ghostBody.Modulate = ghostColour; //initialise ghost colour
 
         FindNewPath(source, target);
         EnterState(ghostState); //initialise first ghostState (patrol);
 
-        //connect powerup signals, if theres a bunch on these put it in a function and then sort things out later
-        ConnectGhostSignals();
+        ConnectGhostSignals(); //connect powerup signals
 
     }
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-        source = mazeTm.WorldToMap(Position); //always updates source pos
+        source = mazeTm.WorldToMap(Position); //always updates source pos (current pos of ghost)
 
         if (defaultTarget)
         {
-            UpdateTarget(); //only update target is defaultTarget true
+            UpdateTarget(); //only update target if defaultTarget true
         }
 
         speed = baseSpeed * GameScript.gameSpeed * speedModifier; //always update speed
 
-        PlayAndPauseAnim(movementV);
-        ProcessStates(delta);
+        PlayAndPauseAnim(movementV); //plays animation when ghost is moving
+        ProcessStates(delta); //does everything in regards to ghosts states, eg chase, patrol
 
-        if (Input.IsActionJustPressed("ui_accept"))
-        {
-            GD.Print("ghost speed ", speed);
-        }
     }
 
-    private void ConnectGhostSignals()
+    private void ConnectGhostSignals() //connect the signals from game script to the methods in this script
     {
         game.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
         game.Connect("DecoyPowerupActivated", this, "_OnDecoyPowerupActivated");
@@ -124,7 +120,7 @@ public class GhostScript : CharacterScript
         ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
         ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
     }
-    protected override void MoveAnimManager(Vector2 masVector) //had to override as ghosts use differnt sprites whereas pacman just rotates
+    protected override void MoveAnimManager(Vector2 masVector) //had to override as ghosts use differnt sprites whereas pacman just rotates. Ghost uses the eye sprites
     {
         masVector = masVector.Normalized().Round();
 
@@ -145,7 +141,7 @@ public class GhostScript : CharacterScript
             ghostEyes.Play("left");
         }
     }
-    private void EnterState(states newGhostState)
+    private void EnterState(states newGhostState) //whenever a ghost enters a new state, start timers for specific state. Used in Finite State Machine for ghost behaviour
     {
         if (newGhostState == states.patrol)
         {
@@ -156,14 +152,13 @@ public class GhostScript : CharacterScript
             chaseTimer.Start((float)GD.RandRange(10, 30));
         }
         ghostState = newGhostState;
-
-
     }
 
-    private void EnterGhostVulnerable()
+
+    private void EnterGhostVulnerable() //vulnerable allows ghost to be killed. Vulnerable is not in the FSM as when vulnerable, it can still be in patrol/chase
     {
         ghostIsVulnerable = true;
-        vulnerableTimer.Start(15);
+        vulnerableTimer.Start(15); //vulnerable mode lasts 15 seconds
         GD.Print("entered vulnerable state");
     }
 
@@ -175,32 +170,31 @@ public class GhostScript : CharacterScript
     private void _OnChaseTimerTimeout()
     {
         defaultTarget = true; //resets back to default target if its been changed (eg from decoy)
-        GD.Print("chaetimertimeout default target", defaultTarget);
-        EnterState(states.patrol); //has to be in here as this is called once and not every frame
+        //GD.Print("chasetimertimeout default target", defaultTarget); //debug
+        EnterState(states.patrol); //has to be in here as this is called once and not every frame. When chase is done, switch to patrol
     }
 
     private void _OnPatrolTimerTimeout()
     {
         defaultTarget = true; //resets back to default target if its been changed (eg from decoy)
         GD.Print("patroltimertimeout default target", defaultTarget);
-        EnterState(states.chase);
+        EnterState(states.chase); //when patrol is done switch to chase
 
     }
 
-    private void _OnVulnerableTimerTimeout()
+    private void _OnVulnerableTimerTimeout() //resets ghost back to normal state when vulnerable (power pellet) ran out
     {
         ghostIsVulnerable = false;
-
-        patrolTimer.Paused = false;
         ghostBody.Modulate = ghostColour;
         ghostBody.Play("walk");
         ghostEyes.Visible = true;
 
-        EnterState(states.patrol);
+        //EnterState(states.patrol);
 
     }
 
-    protected bool IsOnNode(Vector2 pos) //make sure to pass in a worldtomap vector
+    //isonnode used to check if can turn and if valid target vector for the movement script as the adjacency list used for movement only contains nodes
+    protected bool IsOnNode(Vector2 pos) //make sure to pass in a worldtomap vector. 
     {
 
         if (nodeTilemap.GetCellv(pos) == MazeGenerator.NODE)
@@ -213,9 +207,11 @@ public class GhostScript : CharacterScript
         }
     }
 
-    protected Vector2 FindClosestNodeTo(Vector2 targetVector) //finds closest node in nodelist to targetVector
-    {
+    //if pacman is between nodes, find closest one in nodelist so ghosts can still pathfind
+    //goes through each node in nodelist, calculates distance and keeps the shortest. If new shortest, replaces shortest
 
+    protected Vector2 FindClosestNodeTo(Vector2 targetVector) //finds closest node in nodelist to targetVector.
+    {
         Vector2 shortestNode = targetVector;
 
         if (!IsOnNode(targetVector))
@@ -246,6 +242,7 @@ public class GhostScript : CharacterScript
         return shortestNode;
     }
 
+    //chooses algorithm for pathfinding, used for different ghosts as they have different algos
     private void GeneratePathListWithSearchingAlgo(Vector2 sourcePos, Vector2 targetPos)
     {
         if (searchingAlgo == algo.dijkstras)
@@ -263,18 +260,17 @@ public class GhostScript : CharacterScript
 
     }
 
-
+    //resets the pathfinding for the ghosts and generates a new path list for them to follow
     private void FindNewPath(Vector2 sourcePos, Vector2 targetPos)
     {
         pathCounter = 0;
-
-        //have targetPos = function and paths = moveScr.whatever in a new virtual function that can be overrided by the 
-
         GeneratePathListWithSearchingAlgo(sourcePos, targetPos);
         //pathfind to the new targetPos
-
     }
 
+    //used to move the ghosts to the correct position. 
+    //The map to world returns the coordinate of the corner of the tile, so halfCellSize must be added to get coordinate of centre
+    //ghosts follow an array with coordinates of their path. They go to paths[0], then paths[1] etc.
     private void MoveToAndValidatePos(float delta)
     {
         if (Position.IsEqualApprox(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize)) //must use IsEqualApprox with vectors due to floating point precision errors instead of ==
@@ -284,19 +280,21 @@ public class GhostScript : CharacterScript
         else
         {
             movementV = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize, delta * speed); //if not, move toward node position
-            Position = movementV;
+            Position = movementV; //movementV also used in play/pausing animation and to print for debug
             MoveAnimManager(paths[pathCounter] - mazeTm.WorldToMap(Position));
             // GD.Print("Position ", Position);
         }
     }
 
+    //determines the ghosts behaviour in chase mode.
+    //checks if on the same maze as pacman, if not go in patrol. This is so lots of more intensive movement calculations dont have to be done
+    //and the ghosts can be well spread out across mazes so every single ghost in the game doesnt chase after you
+    //if on the same maze, move towards pacman until path is complete, then recalculate
     private void GhostChase(float delta)
     {
-
-
         if (mazeTm.WorldToMap(pacman.Position).y < (mazeTm.mazeOriginY + mazeTm.height - 1))
         {
-            if (IsOnNode(source) && recalculate) //every x seconds, if pacman and ghost is on a node, it recalulates shortest path.
+            if (IsOnNode(source) && recalculate) //every x seconds, if ghost is on a node, it recalulates shortest path.
             {
                 recalculate = false;
                 FindNewPath(source, target);
@@ -319,7 +317,7 @@ public class GhostScript : CharacterScript
 
     }
 
-
+    //move to a random position on the maze its on and recalculate once path is complete. done to spread out ghosts and so player isnt always chased.
     private void GhostPatrol(float delta)
     {
         //GD.Print(patrolTimer.WaitTime);
@@ -337,24 +335,17 @@ public class GhostScript : CharacterScript
         }
     }
 
+    //ghostvulnerable used when power pellet eaten.
+    //when vulnerable (power pellet eaten), ghosts change animation, do random movements
+    //the code for killing a ghost when vulnerable is in GhostAreaEntered signal
     private void GhostVulnerable(float delta)
     {
-        chaseTimer.Stop();          //stop chase and patrol timer just in case
-        patrolTimer.Stop();
-        //patrolTimer.Paused = true; //pauses patrol timer as scatter uses patrol mode for pathfinding
-
         //GD.Print("VULNERABLE STATE");
 
-        ghostBody.Modulate = Colors.White;
-        ghostEyes.Visible = false;
+        ghostBody.Modulate = Colors.White; //all ghosts body is white so the vulnerable skin isnt some wierd hue
+        ghostEyes.Visible = false; //the eyes are turned off as the vulnerable ghost skin has built in eyes.
 
-
-        ghostBody.Play("vulnerable");
-
-
-        //if ghost collides with pacman, kill ghost, give pacman like 100 points and increase multiplier
-
-        //on leaving scatter, play the normal one again. On ready, play the normal one to intitialise.
+        ghostBody.Play("vulnerable"); //applies the vulnerable skin
     }
 
     private void ProcessStates(float delta)
@@ -370,14 +361,14 @@ public class GhostScript : CharacterScript
             GhostChase(delta);
         }
 
-        if (ghostIsVulnerable)
+        if (ghostIsVulnerable) //can be vulnerable and in patrol/chase at the same time. This is so it still moves around
         {
             GhostVulnerable(delta);
         }
 
     }
 
-    public virtual void UpdateTarget()
+    public virtual void UpdateTarget() //default target is pacman
     {
 
         target = FindClosestNodeTo(mazeTm.WorldToMap(pacman.Position));
@@ -395,11 +386,11 @@ public class GhostScript : CharacterScript
         }
         hasIntersectedBefore = true;
 
-        if ((area.Name == "PacmanArea") && (ghostIsVulnerable == true))
+        if ((area.Name == "PacmanArea") && (ghostIsVulnerable == true)) //allows ghost to be killed when vulnerable
         {
-            game.score += (int)(baseScore * game.scoreMultiplier); //add 100*mult to gamescript.score
+            game.score += (int)(baseScore * game.scoreMultiplier); //add base*mult to gamescript.score
             game.scoreMultiplier += 0.25f; //increase mult by 0.25
-            QueueFree();
+            QueueFree(); //delete ghost
         }
     }
 
@@ -413,12 +404,11 @@ public class GhostScript : CharacterScript
     private void _OnPowerPelletActivated()
     {
         EnterGhostVulnerable();
-        pacman.EnableInvincibility(vulnerableTimer.TimeLeft);
+        pacman.EnableInvincibility(vulnerableTimer.TimeLeft); //pacman is invincible for the duration of vulnerable mode so he can collide and kill ghosts without losing health.
     }
 
-    private void _OnDecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime)
+    private void _OnDecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime) //overrrides target of ghosts to new target of decoy
     {
-
         defaultTarget = false;
         target = FindClosestNodeTo(mazeTm.WorldToMap(newPosition)); //change target to position of decoy
         EnterState(states.chase); //chase towards new target
@@ -426,14 +416,14 @@ public class GhostScript : CharacterScript
         chaseTimer.Start(decoyLengthTime);
     }
 
-    private void _OnRandomizerPowerupActivated()
+    private void _OnRandomizerPowerupActivated() //randomises the ghosts pathfinding algorithms
     {
         Random rnd = new Random();
         int algoLength = Enum.GetNames(typeof(algo)).Length;
         searchingAlgo = (algo)rnd.Next(0, algoLength);
     }
 
-    private void _OnChangeSpeedModifierActivated(float newSpeedModifier)
+    private void _OnChangeSpeedModifierActivated(float newSpeedModifier) //allows me to change speed via a signal, very nice
     {
         speedModifier = newSpeedModifier;
     }

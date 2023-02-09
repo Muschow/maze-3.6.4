@@ -1,7 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 public class PacmanScript : CharacterScript
 {
@@ -17,43 +14,35 @@ public class PacmanScript : CharacterScript
     public override void _Ready()
     {
         GD.Print("pacman ready");
+
         GetNodes();
 
-        //put all the labels with initial values in a function like this and call the function in ready
-
-        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 2) * 32 + new Vector2(16, 16);
-        GD.Print("pacman mazeheight,", mazeTm.height);
-        GD.Print("pman ps", Position);
+        //spawns pacman on bottom left of maze. * celllsize to convert from map to world, + halfCellSize so spawns in centre of tile
+        Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 2) * MazeGenerator.CELLSIZE + MazeGenerator.halfCellSize;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
-        GetInput();
-        Vector2 masVector = Move(moveDir, speed);
-        MoveAnimManager(masVector);
+        GetInput(); //gets wasd/arrow keys inputs
+
+        Move(moveDir, speed); //handles movement, animations etc
 
         speed = baseSpeed * GameScript.gameSpeed;
 
-        UpdateTravelDistance();
-
-        if (Input.IsActionJustPressed("ui_accept"))
-        {
-            GD.Print("pacman speed ", speed);
-        }
-
+        UpdateTravelDistance(); //moving vertically increases dist for win condition
     }
 
     private void GetNodes()
     {
         mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
-        raycasts = GetNode<RayCastScript>("RayCasts"); //maybe have a pacmanInit method with all this crap in
+        raycasts = GetNode<RayCastScript>("RayCasts");
         game = GetNode<GameScript>("/root/Game");
     }
 
-    private void GetInput()
+    private void GetInput() //translate WASD/arrow key presses to movement vector
     {
-        if (Input.IsActionJustPressed("move_up"))
+        if (Input.IsActionJustPressed("move_up")) //in project settings i have set WASD and arrow keys to "move_up" etc.
         {
             nextDir = Vector2.Up;
         }
@@ -70,28 +59,30 @@ public class PacmanScript : CharacterScript
             nextDir = Vector2.Left;
         }
 
+        //this is so that you can queue a turn before you actually reach it, and then it executes the turn when you reach it
+        //via rays detecting free space to turn into
         if (raycasts.RaysAreColliding(nextDir) == false)
         {
             moveDir = nextDir;
         }
-        //CheckCollision(); //merge checkCollision code with GetInput
-        //moveVelocity = moveDir * speed;
     }
 
 
-    private Vector2 Move(Vector2 moveDir, float speed) //change moveDir and speed
+    private void Move(Vector2 moveDir, float speed) //change moveDir and speed
     {
         Vector2 moveVelocity = moveDir * speed;
 
         Vector2 masVector = MoveAndSlide(moveVelocity, Vector2.Up);
 
         PlayAndPauseAnim(masVector);
-
-        return masVector;
+        MoveAnimManager(masVector);
     }
 
     private bool invincible = false;
-    public void _OnPacmanAreaEntered(Area area) //do more stuff with this
+
+    //signal the area2d node emits whenever something enters its collision shape
+    //so ghosts dont kill you when you get power pellet and so kill wall kills you
+    public void _OnPacmanAreaEntered(Area area)
     {
         //GD.Print(area.Name);
         if (area.Name == "GhostArea" && !invincible)
@@ -106,8 +97,6 @@ public class PacmanScript : CharacterScript
             GD.Print("pacman hit killwall, game over");
             game.GameOver();
         }
-
-
     }
 
     public void EnableInvincibility(float time)
@@ -123,6 +112,9 @@ public class PacmanScript : CharacterScript
 
 
     private Vector2 oldPos = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
+
+    //if new pos is higher than old pos increase distance... 
+    //except in godot +y goes downwards so thats why its less than
     private void UpdateTravelDistance()
     {
         if ((int)((Position / 32).y) < (int)((oldPos / 32).y))

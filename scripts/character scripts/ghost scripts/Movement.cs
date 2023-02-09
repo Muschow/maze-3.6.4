@@ -8,7 +8,8 @@ public class Movement : Node
     public LinkedList<Tuple<Vector2, int>>[] adjList;
     public List<Vector2> nodeList;
 
-    //make a function to convert the source vector from a float to a actual vector by doing MapToWorld and WorldToMap etc
+    //used to convert a (0,y) or (x,0) vector to an int. 
+    //This is so I can get a distance from neighoburing nodes.
     public int ConvertVecToInt(Vector2 vector)
     {
         if (vector.x == 0)
@@ -29,6 +30,10 @@ public class Movement : Node
         }
     }
 
+    //Heuristic is only used in A* algorithm so thats what the bool is for
+    //It is used to make more accurate predictions on shortest path so not every path needs to be checked
+    //I am using manhattan distance which is end coord - source added together. 
+    //Manhattan distance is used for A* when you can move only in 4 different directions, which in my pacman game you can.
     private int Heuristic(Vector2 source, Vector2 end, bool Astar)
     {
         if (Astar)
@@ -43,147 +48,82 @@ public class Movement : Node
         }
     }
 
-
-
-
     public List<Vector2> Dijkstras(Vector2 source, Vector2 target, bool Astar) //takes in graph (adjMatrix) and source (Pos) Ghost MUST spawn on node
     {
         List<Vector2> pathList = new List<Vector2>();
 
-        //make all the adjList stuff static and then do nodeList = MazeGenerator.nodeList
-
-        //to reset my changes, make the ajList properties static and then replace mazeG.nodeList with MazeGenerator.nodeList
-        //GD.Print("printing nodelist count in Movement...");
-        //GD.Print(nodeList.Count);
-
-        //GD.Print("source " + source);
-        //GD.Print("target " + target);
-        // if (nodeList.Contains(target))
-        // {
-        //     GD.Print("target is a node");
-        // }
-        // else
-        // {
-        //     GD.Print("target is not a node");
-        // }
-
-        // if (nodeList.Contains(source))
-        // {
-        //     GD.Print("source is a node");
-        // }
-        // else
-        // {
-        //     GD.Print("source is not a node");
-        // }
-        //Have a method here that makes sure source and target are nice round Vectors and not decimals or something like that
-        //Im thinking WorldToMap and then MapToWorld again
-
+        //if the target and source arent in the nodelist, return. It is likely
+        //the ghost is not on the same maze as the player and in my game the ghosts intentionally cant travel between mazes
+        //so no point doing any calculations.
         if (!(nodeList.Contains(target) && nodeList.Contains(source)))
         {
             return pathList;
         }
 
-        if (source == target)
+        if (source == target) //this is as there is nothing to pathfind here, youve reached your destination. Adds source so it stays to that position.
         {
             pathList.Add(source);
             return pathList;
         }
 
-        List<Vector2> unvisited = new List<Vector2>();
+        List<Vector2> unvisited = new List<Vector2>(); //stores unvisited nodes so we dont waste time visiting visited ones
 
-        // Previous nodes in optimal path from source
-        Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>();
+        Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>(); //stores the previous nodes in the shortest path from the source
 
-        // The calculated distances, set all to Infinity at start, except the start Node
-        Dictionary<Vector2, int> distances = new Dictionary<Vector2, int>();
+        //stores the calculated distances which are all set to infinity at the start as we dont know their sizes yet apart from start node.
+        Dictionary<Vector2, int> distances = new Dictionary<Vector2, int>(); //stores coordinate and its distance from source
 
         for (int i = 0; i < nodeList.Count; i++)
         {
-            unvisited.Add(nodeList[i]);
-
-            // Setting the node distance to Infinity (or in this case 9999 lol)
-            distances.Add(nodeList[i], GameScript.INFINITY);
-
-            //previous.Add(nodeList[i], Vector2.Zero);
+            unvisited.Add(nodeList[i]); //initially every node is unvisited.
+            distances.Add(nodeList[i], GameScript.INFINITY); //sets the node distance to infinity (or in this case 9999 lol)
         }
 
-        distances[source] = 0;
+        distances[source] = 0; //sets distance from source to 0 as it starts at source
 
-        while (unvisited.Count != 0)
+        while (unvisited.Count > 0)
         {
-            //order unvisted list by distance.
+            //order unvisted list by distance from source. Heuristic is only used in A*, otherwise it adds 0
             unvisited = unvisited.OrderBy(node => distances[node] + Heuristic(source, node, Astar)).ToList();
 
-            Vector2 current = new Vector2(unvisited[0]); //get node with smallest distance
-            unvisited.RemoveAt(0);
+            Vector2 current = new Vector2(unvisited[0]); //get unvisited node with smallest distance
+            unvisited.RemoveAt(0); //removes it from unvisited list, essentially marking it as visited
 
-            if (current == target)
+            if (current == target) //if current is target, we've gone through all possibilities and found our shortest path
             {
-                //Gd.Print("curr = " + current);
-                //Gd.Print("target = " + target);
-
-                //GD.Print("curr == target");
-                while (previous.ContainsKey(current))
+                while (previous.ContainsKey(current)) //work backwards from target node to find previous nodes we must go to to get to it
                 {
-                    //Gd.Print("previous[current] " + previous[current]);
-                    //insert the node onto the final result
                     pathList.Add(current);
                     current = previous[current];
-
-                    //Gd.Print("current: " + current);
-
                 }
-                //insert the source onto the final result
-                pathList.Add(current);
-                pathList.Reverse(); //check if this reverse even works
+                pathList.Add(current); //insert the source onto the final result
+                pathList.Reverse(); //right now the list goes from target --> source, reverse the list to get source --> target
 
-                break; //maybe a return would be better here...
+                break;
             }
 
-            for (int i = 0; i < nodeList.Count; i++)
+
+            int curIndex = nodeList.IndexOf(current);
+
+            if (curIndex == -1) //debug purposes only, can get rid of it
             {
-                //GD.Print("current vec: " + current);
-                int curIndex = nodeList.IndexOf(current);
+                GD.Print("Could not find current node in nodeList");
+            }
 
+            int neighbourVal = 0;
+            foreach (Tuple<Vector2, int> edge in adjList[curIndex]) //for each neighbour coordinate for current node
+            {
+                neighbourVal = edge.Item2; //edge.Item2 is the distance from neighbour to current
+                int alt = distances[current] + neighbourVal; //alternate distance is distance from source of current + distance to neighbour
+                Vector2 neighbourNode = edge.Item1; //edge.Item1 is the neighbour node coordinates
 
-                if (curIndex == -1)
+                if (alt < distances[neighbourNode]) //if the distance from source is shorter when going through current, 
                 {
-                    GD.Print("Could not find current node in nodeList");
+                    distances[neighbourNode] = alt; //update dist from source for neighbour node
+                    previous[neighbourNode] = current; //show that you must go through current by putting it as previous to neighbour
                 }
-
-                int neighbourVal = 0;
-                foreach (Tuple<Vector2, int> edge in adjList[curIndex])
-                {
-                    if (edge.Item1 == nodeList[i])
-                    {
-                        neighbourVal = edge.Item2;
-                    }
-                }
-
-                if (neighbourVal != 0)
-                {
-                    int alt = distances[current] + neighbourVal;
-                    Vector2 neighbourNode = nodeList[i]; //something to do with these lines
-
-                    if (alt < distances[neighbourNode])
-                    {
-                        distances[neighbourNode] = alt;
-                        previous[neighbourNode] = current;
-                    }
-                }
-
             }
         }
-
-        if (Astar == false)
-        {
-            //GD.Print("dijkstras complete, pathlist count " + pathList.Count);
-        }
-        else
-        {
-            //GD.Print("astar complete, pathlist count " + pathList.Count);
-        }
-
 
         return pathList;
     }
@@ -192,18 +132,21 @@ public class Movement : Node
     {
         List<Vector2> pathList = new List<Vector2>();
 
+        //if the target and source arent in the nodelist, return. It is likely
+        //the ghost is not on the same maze as the player and in my game the ghosts intentionally cant travel between mazes
+        //so no point doing any calculations.
         if (!(nodeList.Contains(target) && nodeList.Contains(source)))
         {
             return pathList;
         }
 
-        if (source == target)
+        if (source == target) //this is as there is nothing to pathfind here, youve reached your destination. Adds source so it stays to that position.
         {
             pathList.Add(source);
             return pathList;
         }
 
-        Queue<Vector2> bfsQ = new Queue<Vector2>();
+        Queue<Vector2> bfsQ = new Queue<Vector2>(); //breadth first search uses a queue to search the nodes
         bfsQ.Enqueue(source);
 
         List<Vector2> unvisited = new List<Vector2>();
@@ -213,16 +156,17 @@ public class Movement : Node
         }
         unvisited.Remove(source);
 
-        Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>();
+        Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>(); //stores the previous nodes in the shortest path from the source
+        //bfs is used for unweighted graph so the distances from start arent needed, just finds the shortest paths in terms of number of edges.
 
         while (bfsQ.Count > 0)
         {
             Vector2 currNode = bfsQ.Dequeue();
             int curIndex = nodeList.IndexOf(currNode);
 
-            foreach (Tuple<Vector2, int> edge in adjList[curIndex])
+            foreach (Tuple<Vector2, int> edge in adjList[curIndex]) //for each neighbour node of current node
             {
-                Vector2 neighbour = edge.Item1;
+                Vector2 neighbour = edge.Item1; //edge.Item1 is coordinate of neighbour
                 if (unvisited.Contains(neighbour))
                 {
                     bfsQ.Enqueue(neighbour);
@@ -234,13 +178,13 @@ public class Movement : Node
         }
 
         Vector2 current = target;
-        while (previous.ContainsKey(current))
+        while (previous.ContainsKey(current)) //work backwards from target to get to source
         {
             pathList.Add(current);
             current = previous[current];
         }
-        pathList.Add(source);
-        pathList.Reverse();
+        pathList.Add(source); //as source was the first thing, it was never added to previous so we add it now
+        pathList.Reverse(); //from target to source --> source to target
 
         //GD.Print("bfs complete, pathlist count " + pathList.Count);
 

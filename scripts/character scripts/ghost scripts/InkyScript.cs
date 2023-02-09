@@ -9,15 +9,15 @@ public class InkyScript : GhostScript
 
         Array values = Enum.GetValues(typeof(algo));
         Random random = new Random();
-        algo randomAlgo = (algo)values.GetValue(random.Next(values.Length));
+        algo randomAlgo = (algo)values.GetValue(random.Next(values.Length)); //puts all the values in algo enum into an array and chooses a random one
 
-        searchingAlgo = randomAlgo; //blue, although it moves randomly, uses astar as thats generally the fastest algorithm
+        searchingAlgo = randomAlgo; //blue uses a random algorithm to pathfind
     }
 
     public override void _Ready()
     {
         base._Ready();
-        patrolTimer.Paused = true; //patrol timer is a built in godot node so we must wait for ready to be called to edit it
+        patrolTimer.Paused = true; //a timer is a built in godot node so we must wait for ready to be called to edit it
         //by pausing the patrol timer, it means inky never goes to chase mode
 
     }
