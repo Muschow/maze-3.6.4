@@ -3,6 +3,7 @@ using Godot;
 public class PacmanScript : CharacterScript
 {
     private RayCastScript raycasts;
+    private AnimatedSprite pacmanBody;
     private Vector2 nextDir = Vector2.Zero;
     private Vector2 moveDir = Vector2.Zero;
     private GameScript game;
@@ -38,6 +39,7 @@ public class PacmanScript : CharacterScript
         mazeTm = GetNode<MazeGenerator>("/root/Game/MazeContainer/Maze/MazeTilemap");
         raycasts = GetNode<RayCastScript>("RayCasts");
         game = GetNode<GameScript>("/root/Game");
+        pacmanBody = GetNode<AnimatedSprite>("AnimatedSprite");
     }
 
     private void GetInput() //translate WASD/arrow key presses to movement vector
@@ -67,15 +69,14 @@ public class PacmanScript : CharacterScript
         }
     }
 
-
     private void Move(Vector2 moveDir, float speed) //change moveDir and speed
     {
         Vector2 moveVelocity = moveDir * speed;
 
         Vector2 masVector = MoveAndSlide(moveVelocity, Vector2.Up);
 
-        PlayAndPauseAnim(masVector);
-        MoveAnimManager(masVector);
+        PlayAndPauseAnim(masVector, pacmanBody);
+        MoveAnimManager(masVector, pacmanBody);
     }
 
     private bool invincible = false;

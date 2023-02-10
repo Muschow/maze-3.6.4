@@ -6,13 +6,12 @@ public abstract class CharacterScript : KinematicBody2D
 {
     public float speed;
     protected float baseSpeed = 100;
-    protected MazeGenerator mazeTm;
-    protected AnimatedSprite animatedSprite;
+    protected MazeGenerator mazeTm; //every character needs a reference to the maze for movement/collisions/spawning etc
 
-    protected void PlayAndPauseAnim(Vector2 masVector) //requires AnimatedSprite reference
+    //plays animations when moving
+    protected void PlayAndPauseAnim(Vector2 masVector, AnimatedSprite animatedSprite) //masVector is move and slide vector, basically any movement vector will do  
     {
-        AnimatedSprite animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
-        //animatedSprite.SpeedScale = gameSpeed; not sure whether to get rid of this, it looks kind of weird.
+        masVector = masVector.Round();
 
         if (masVector == Vector2.Zero)
         {
@@ -24,27 +23,28 @@ public abstract class CharacterScript : KinematicBody2D
         }
     }
 
-    protected virtual void MoveAnimManager(Vector2 masVector) //override this with swapping eye animation for ghosts
+    //plays the correct animation for whatever direction youre going in
+    //each character can only move in 4 directions in my game so as long as they have seperate up/down/left/right animations
+    //(which they do) this method can apply
+    protected void MoveAnimManager(Vector2 masVector, AnimatedSprite animatedSprite)
     {
-        AnimatedSprite animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite"); //not sure whether to put it in here for readabillity or in each ready so theres less calls
-        masVector = masVector.Normalized().Round();
-
+        masVector = masVector.Normalized().Round(); //just makes sure the movement vector is in the form 1,0 / -1,0 / 0,1 / 0,-1
 
         if (masVector == Vector2.Up)
         {
-            animatedSprite.RotationDegrees = -90;
+            animatedSprite.Play("up");
         }
         else if (masVector == Vector2.Down)
         {
-            animatedSprite.RotationDegrees = 90;
+            animatedSprite.Play("down");
         }
         else if (masVector == Vector2.Right)
         {
-            animatedSprite.RotationDegrees = 0; //this takes facing right as the default animation frame
+            animatedSprite.Play("right");
         }
         else if (masVector == Vector2.Left)
         {
-            animatedSprite.RotationDegrees = 180;
+            animatedSprite.Play("left");
         }
     }
 }

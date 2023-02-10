@@ -6,23 +6,23 @@ public class MazeGenerator : TileMap
 {
     //---------------------------------------------statics and constants-----------------------------
     public const int CELLSIZE = 32;
-    public const int NODE = 0;
-    public const int WALL = 1;
-    public const int PATH = 0;
+    public const int NODE = 0; //on nodetilemap, nodetile has a value of 0
+    public const int WALL = 1; //on mazetilemap, wall has a value of 1
+    public const int PATH = 0; //on mazetilemap, path has a value of 0
     public static Vector2 halfCellSize = new Vector2(CELLSIZE / 2, CELLSIZE / 2);
 
     //-------------------------------------------------------------------------------------------------
     [Export] public int width = 31; //originally 31
-    [Export] public int height = 38; //was originally 19, then 38, now random
-    public int mazeOriginY = 0; //maybe make this or mazeStartLoc a global variable/static or something
+    [Export] public int height = 37; //originally 37
+    public int mazeOriginY = 0;
     private int backtrackCount = 0; //used to figure out when to join dead ends
     private bool generationComplete = false;
 
-    Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
+    Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left }; //used to loop through the directions
 
     List<Vector2> visited = new List<Vector2>();
     List<Vector2> wallEdgeList = new List<Vector2>();
-    Stack<Vector2> rdfStack = new Stack<Vector2>();
+    Stack<Vector2> idfStack = new Stack<Vector2>(); //iterative dfs stack
 
     //-----------------------------------------------------Adjacency Matrix/List properties---------------------------------------------------------------
     public List<Vector2> nodeList = new List<Vector2>(); //for nodes,maybe get rid of this to be honest
@@ -39,7 +39,7 @@ public class MazeGenerator : TileMap
     PackedScene powerupFactoryScene = GD.Load<PackedScene>("res://scenes/powerup scenes/PowerupFactory.tscn");
 
     //-------------------------------------------------------------Ready and Process--------------------------------------------------------------------
-    public override void _EnterTree()
+    public override void _EnterTree() //called before ready, when entered scene tree
     {
         CorrectMazeSize(); //makes width and height odd when maze enters scene tree (before ready is called)
     }
@@ -51,19 +51,14 @@ public class MazeGenerator : TileMap
         GD.Randomize();
         GetNodes();
 
-        powerupFactory = (Node2D)powerupFactoryScene.Instance();
-
-
-        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout //maybe this would work if it was static and we just deleted mazestartloc
+        powerupFactory = (Node2D)powerupFactoryScene.Instance(); //powerupfactory is a scene that contains all the powerups. used to spawn them in
+        mazeOriginY = gameScr.mazeStartLoc; //just means the maze origin stays throughout
 
         IterativeDFSInit();
-        //UpdateDirtyQuadrants(); //maybe get rid of this tbh, not sure if its doing anything. Supposed to force and update to the tilemap if tiles arent updating
-
         GenerateAdjList();
-
         AddRandomPowerups();
 
-        GD.Print("nodeList Count: " + nodeList.Count);
+        GD.Print("nodeList Count: " + nodeList.Count); //debug
     }
 
     private void GetNodes()
@@ -93,7 +88,7 @@ public class MazeGenerator : TileMap
     }
 
     //---------------------------------------------------Maze Generator Helper Functions-----------------------------------------------------------------
-    private void CorrectMazeSize()
+    private void CorrectMazeSize() //width and height must be odd as we generate the maze as a grid of path tiles, each surrounded by walls. Otherwise, edges wouldnt work
     {
         if (width % 2 != 1)
         {
@@ -107,7 +102,7 @@ public class MazeGenerator : TileMap
         GD.Print("height " + height);
     }
 
-    private void CreateStartingGrid()
+    private void CreateStartingGrid() //is a grid of path tiles, each surrounded by walls. top is empty, bottom has a wall edge.
     {
         for (int i = 0; i < width; i++)
         {
@@ -243,7 +238,7 @@ public class MazeGenerator : TileMap
         //GD.Print("StartV: " + startVector); //debug
 
         visited.Add(startVector); //Mark initial cell as visited,
-        rdfStack.Push(startVector); //and push it to the stack,
+        idfStack.Push(startVector); //and push it to the stack,
 
         IterativeDFSStep();
     }
@@ -253,7 +248,7 @@ public class MazeGenerator : TileMap
         Vector2 prev = new Vector2(0, 0);
         while (!generationComplete)
         {
-            Vector2 curr = rdfStack.Pop(); //Pop a cell from the stack and make it a current cell.
+            Vector2 curr = idfStack.Pop(); //Pop a cell from the stack and make it a current cell.
             Vector2 next = new Vector2(0, 0);
 
             bool found = false;
@@ -281,11 +276,11 @@ public class MazeGenerator : TileMap
                 }
                 prev = next;
 
-                rdfStack.Push(curr); //Push the current cell to the stack,
+                idfStack.Push(curr); //Push the current cell to the stack,
                 SetCellv(curr + (next / 2), PATH); // Remove the wall between the current cell and the chosen cell,
                 AddPellet(curr + (next / 2));
                 visited.Add(curr + next); //Mark the chosen cell as visited,
-                rdfStack.Push(curr + next); //and push it to the stack.  
+                idfStack.Push(curr + next); //and push it to the stack.  
 
                 backtrackCount = 0;
             }
@@ -298,7 +293,7 @@ public class MazeGenerator : TileMap
                 }
             }
 
-            if (rdfStack.Count <= 0)
+            if (idfStack.Count <= 0)
             { //While stack is not empty, (if stack is empty)
                 FixDeadEnds(curr);
                 PrepMazeForJoin(7); //dependancy on gameScr.Get(mazesOnTheScreen)

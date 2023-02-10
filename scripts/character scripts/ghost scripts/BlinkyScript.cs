@@ -1,6 +1,5 @@
 using Godot;
 
-
 public class BlinkyScript : GhostScript
 {
     public BlinkyScript()

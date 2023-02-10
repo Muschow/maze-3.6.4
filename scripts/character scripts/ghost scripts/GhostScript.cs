@@ -39,7 +39,6 @@ public class GhostScript : CharacterScript
     private List<Vector2> paths;
     protected Vector2 target;
     protected Vector2 source;
-    private Vector2 movementV; //movementV is used to check if a ghost is moving so animation can be played/paused
     private int pathCounter = 0;
 
     //---------------------------------Timers----------------------------
@@ -88,9 +87,7 @@ public class GhostScript : CharacterScript
 
         speed = baseSpeed * GameScript.gameSpeed * speedModifier; //always update speed
 
-        PlayAndPauseAnim(movementV); //plays animation when ghost is moving
         ProcessStates(delta); //does everything in regards to ghosts states, eg chase, patrol
-
     }
 
     private void ConnectGhostSignals() //connect the signals from game script to the methods in this script
@@ -120,27 +117,7 @@ public class GhostScript : CharacterScript
         ghostBody = GetNode<AnimatedSprite>("AnimatedSprite");
         ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
     }
-    protected override void MoveAnimManager(Vector2 masVector) //had to override as ghosts use differnt sprites whereas pacman just rotates. Ghost uses the eye sprites
-    {
-        masVector = masVector.Normalized().Round();
 
-        if (masVector == Vector2.Up)
-        {
-            ghostEyes.Play("up");
-        }
-        else if (masVector == Vector2.Down)
-        {
-            ghostEyes.Play("down");
-        }
-        else if (masVector == Vector2.Right)
-        {
-            ghostEyes.Play("right");
-        }
-        else if (masVector == Vector2.Left)
-        {
-            ghostEyes.Play("left");
-        }
-    }
     private void EnterState(states newGhostState) //whenever a ghost enters a new state, start timers for specific state. Used in Finite State Machine for ghost behaviour
     {
         if (newGhostState == states.patrol)
@@ -188,15 +165,11 @@ public class GhostScript : CharacterScript
         ghostBody.Modulate = ghostColour;
         ghostBody.Play("walk");
         ghostEyes.Visible = true;
-
-        //EnterState(states.patrol);
-
     }
 
     //isonnode used to check if can turn and if valid target vector for the movement script as the adjacency list used for movement only contains nodes
     protected bool IsOnNode(Vector2 pos) //make sure to pass in a worldtomap vector. 
     {
-
         if (nodeTilemap.GetCellv(pos) == MazeGenerator.NODE)
         {
             return true;
@@ -209,17 +182,12 @@ public class GhostScript : CharacterScript
 
     //if pacman is between nodes, find closest one in nodelist so ghosts can still pathfind
     //goes through each node in nodelist, calculates distance and keeps the shortest. If new shortest, replaces shortest
-
     protected Vector2 FindClosestNodeTo(Vector2 targetVector) //finds closest node in nodelist to targetVector.
     {
         Vector2 shortestNode = targetVector;
 
         if (!IsOnNode(targetVector))
         {
-            //GD.Print("THIS IS GETTING CALLED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            //GD.Print("targetpos ", targetVector);
-            //GD.Print("mazeorigin+height-1 ", mazeOrigin + mazeheight - 1);
-
             //the node must have the same x or y as targetPos
             int shortestInt = GameScript.INFINITY;
             shortestNode = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
@@ -277,11 +245,10 @@ public class GhostScript : CharacterScript
         {
             pathCounter++; //if ghost position == node position then increment
         }
-        else
+        else //if not, move toward node position
         {
-            movementV = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize, delta * speed); //if not, move toward node position
-            Position = movementV; //movementV also used in play/pausing animation and to print for debug
-            MoveAnimManager(paths[pathCounter] - mazeTm.WorldToMap(Position));
+            Position = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize, delta * speed); //delta*speed makes it so speed is consistent regardless of frame rate
+            MoveAnimManager(paths[pathCounter] - mazeTm.WorldToMap(Position), ghostEyes);
             // GD.Print("Position ", Position);
         }
     }
