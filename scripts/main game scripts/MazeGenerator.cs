@@ -98,8 +98,8 @@ public class MazeGenerator : TileMap
         {
             height -= 1;
         }
-        GD.Print("width " + width); //debug
-        GD.Print("height " + height); //debug
+        //GD.Print("width " + width); //debug
+        //GD.Print("height " + height); //debug
     }
 
     private void CreateStartingGrid() //is a grid of path tiles, each surrounded by walls. top is empty, bottom has a wall edge.
@@ -184,7 +184,7 @@ public class MazeGenerator : TileMap
             }
         }
 
-        GD.Print(mazeOriginY); //debug
+        //GD.Print(mazeOriginY); //debug
 
 
 
@@ -298,7 +298,7 @@ public class MazeGenerator : TileMap
 
                 generationComplete = true;
 
-                GD.Print("Maze Generation Complete!"); //debug
+                //GD.Print("Maze Generation Complete!"); //debug
                 return;
             }
         }
@@ -468,7 +468,7 @@ public class MazeGenerator : TileMap
     {
         powerupFactory.QueueFree(); //powerupfactory is never added to scene tree so must be explcicity freed
         GetParent().QueueFree();
-        GD.Print("mazegen parent queuefree");
+        //GD.Print("mazegen parent queuefree"); //debug
     }
 
 }
