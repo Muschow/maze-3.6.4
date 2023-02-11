@@ -22,7 +22,8 @@ public class MazeGenerator : TileMap
 
     List<Vector2> visited = new List<Vector2>();
     List<Vector2> wallEdgeList = new List<Vector2>(); //used to make sure wall edges arent removed when removing dead ends
-    Stack<Vector2> idfStack = new Stack<Vector2>(); //iterative dfs stack
+    //Stack<Vector2> idfStack = new Stack<Vector2>(); //iterative dfs stack
+    StackScript myIDFstack = new StackScript();
 
     //-----------------------------------------------------Adjacency Matrix/List properties---------------------------------------------------------------
     public List<Vector2> nodeList = new List<Vector2>(); //for nodes,maybe get rid of this to be honest
@@ -236,7 +237,8 @@ public class MazeGenerator : TileMap
         //GD.Print("StartV: " + startVector); //debug
 
         visited.Add(startVector); //Mark initial cell as visited,
-        idfStack.Push(startVector); //and push it to the stack,
+        //idfStack.Push(startVector); //and push it to the stack,
+        myIDFstack.Push(startVector);
 
         IterativeDFSStep();
     }
@@ -246,7 +248,8 @@ public class MazeGenerator : TileMap
         Vector2 prev = new Vector2(0, 0);
         while (!generationComplete)
         {
-            Vector2 curr = idfStack.Pop(); //Pop a cell from the stack and make it a current cell.
+            //Vector2 curr = idfStack.Pop(); //Pop a cell from the stack and make it a current cell.
+            Vector2 curr = myIDFstack.Pop();
             Vector2 next = new Vector2(0, 0);
 
             bool found = false;
@@ -274,11 +277,13 @@ public class MazeGenerator : TileMap
                 }
                 prev = next;
 
-                idfStack.Push(curr); //Push the current cell to the stack,
+                //idfStack.Push(curr); //Push the current cell to the stack,
+                myIDFstack.Push(curr);
                 SetCellv(curr + (next / 2), PATH); // Remove the wall between the current cell and the chosen cell,
                 AddPellet(curr + (next / 2));
                 visited.Add(curr + next); //Mark the chosen cell as visited,
-                idfStack.Push(curr + next); //and push it to the stack.  
+                //idfStack.Push(curr + next); //and push it to the stack.  
+                myIDFstack.Push(curr + next);
 
                 backtrackCount = 0;
             }
@@ -290,8 +295,8 @@ public class MazeGenerator : TileMap
                     FixDeadEnds(curr);
                 }
             }
-
-            if (idfStack.Count <= 0)
+            //if idfStack.Count <= 0
+            if (myIDFstack.isEmpty())
             { //If stack is empty
                 FixDeadEnds(curr); //remove the dead end on the source tile
                 PrepMazeForJoin(7); //originally 7 holes to travel between each maze
