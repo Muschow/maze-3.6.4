@@ -58,7 +58,7 @@ public class GhostScript : CharacterScript
     //As GhostScript is a base class, it will not be in the scene tree.
     public override void _Ready()
     {
-        GD.Print("ghostscript ready"); //debug
+        //GD.Print("ghostscript ready"); //debug
 
         GetNodes();
 
