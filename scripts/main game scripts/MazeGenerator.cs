@@ -292,7 +292,7 @@ public class MazeGenerator : TileMap
             }
 
             if (idfStack.Count <= 0)
-            { //While stack is not empty, (if stack is empty)
+            { //If stack is empty
                 FixDeadEnds(curr); //remove the dead end on the source tile
                 PrepMazeForJoin(7); //originally 7 holes to travel between each maze
 

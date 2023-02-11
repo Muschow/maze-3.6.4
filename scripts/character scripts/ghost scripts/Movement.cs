@@ -159,7 +159,7 @@ public class Movement : Node
         Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>(); //stores the previous nodes in the shortest path from the source
         //bfs is used for unweighted graph so the distances from start arent needed, just finds the shortest paths in terms of number of edges.
 
-        while (bfsQ.Count > 0)
+        while (bfsQ.Count > 0) //while bfsQ is not empty
         {
             Vector2 currNode = bfsQ.Dequeue();
             int curIndex = nodeList.IndexOf(currNode);
