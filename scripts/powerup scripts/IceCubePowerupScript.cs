@@ -13,7 +13,7 @@ public class IceCubePowerupScript : ItemPickupScript
     }
     public override void ItemAbility()
     {
-        this.Visible = false;
+        this.Visible = false; //instead of deleting the ice cube when picked up, remove collision and make it invisible
 
         GetNode<CollisionShape2D>("ItemArea/CollisionShape2D").SetDeferred("Disabled", true);
         GetNode<Timer>("PowerupTimer").Start(icecubeWaitTime);
@@ -27,7 +27,7 @@ public class IceCubePowerupScript : ItemPickupScript
         GD.Print("onpoweruptimertimeout");
         //EmitSignal change speedModifier back
         newSpeedModifier = 1;
-        game.EmitSignal("ChangeSpeedModifier", newSpeedModifier); //i think changespeedval changes here im not sure
-        QueueFree();
+        game.EmitSignal("ChangeSpeedModifier", newSpeedModifier);
+        QueueFree(); //delete the icecube when the duration has been reached
     }
 }

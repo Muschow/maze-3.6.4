@@ -19,6 +19,7 @@ public class GameOverScript : Control
         if (global.gameWon)
         {
             GetNode<Label>("CanvasLayer/Panel/Heading").Text = "YOU WIN!";
+
             int[] dbParams = new int[] { global.userId, global.userScore };
             database.Call("queryDBwithParameters", "INSERT INTO HighScores (PlayerID, Score) VALUES (?, ?);", dbParams); //adds new highscore to db
             database.Call("queryDB", "DELETE FROM HighScores WHERE ID NOT IN (SELECT ID FROM HighScores ORDER BY Score DESC LIMIT 10);"); //removes rows below top 10 scores

@@ -21,7 +21,7 @@ public class MazeGenerator : TileMap
     Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left }; //used to loop through the directions
 
     List<Vector2> visited = new List<Vector2>();
-    List<Vector2> wallEdgeList = new List<Vector2>();
+    List<Vector2> wallEdgeList = new List<Vector2>(); //used to make sure wall edges arent removed when removing dead ends
     Stack<Vector2> idfStack = new Stack<Vector2>(); //iterative dfs stack
 
     //-----------------------------------------------------Adjacency Matrix/List properties---------------------------------------------------------------
@@ -29,8 +29,8 @@ public class MazeGenerator : TileMap
     public LinkedList<Tuple<Vector2, int>>[] adjacencyList;
 
     //-------------------------------------------------------------GetNodes------------------------------------------------------------------------------
-    private Node2D powerupContainer;
-    private Node2D powerupFactory;
+    private Node2D powerupContainer; //parent node to hold powerups
+    private Node2D powerupFactory; //scene that contains one of each powerup
     private TileMap nodeTilemap;
     private GameScript gameScr;
 
@@ -76,7 +76,7 @@ public class MazeGenerator : TileMap
         pelletInstance.Position = MapToWorld(spawnPosition) + new Vector2(16, 16);
     }
 
-    private void AddRandomPowerups()
+    private void AddRandomPowerups() //adds powerups to random paths on maze by getting random child of powerupFactory and duplicating it
     {
         int numPowerupsToSpawn = (int)GD.RandRange(1, 5);
         for (int i = 0; i < numPowerupsToSpawn; i++)
@@ -131,7 +131,7 @@ public class MazeGenerator : TileMap
         }
     }
 
-    private void FixDeadEnds(Vector2 currentV)
+    private void FixDeadEnds(Vector2 currentV) //removes dead ends so the maze is a braid maze
     {
         bool complete = false;
 
@@ -159,7 +159,7 @@ public class MazeGenerator : TileMap
         }
     }
 
-    private void PrepMazeForJoin(int numHoles) //dependancy on gameScr.Get(mazesOnTheScreen)
+    private void PrepMazeForJoin(int numHoles) //removes walls on top and adds a couple paths to floor so that they can join seamlessly
     {
         Random rnd = new Random();
         int numUsedCells = 0;
@@ -190,7 +190,7 @@ public class MazeGenerator : TileMap
 
         if (gameScr.mazesOnTheScreen > 0) //If its not the first maze, Add paths to the floor so that you can join to the maze below
         {
-            while (numUsedCells < numHoles) //Maybe change to Math.Round(width/4) <-- [must be >3]
+            while (numUsedCells < numHoles)
             {
                 int cellX = rnd.Next(1, width - 1);
                 Vector2 cell = new Vector2(cellX, mazeOriginY + height - 1);
@@ -201,7 +201,6 @@ public class MazeGenerator : TileMap
                     numUsedCells++;
                     //I deliberately made it so there are no nodes joining the 2 mazes. This is as a ghost is instanced on its own maze; if pacman goes between mazes, 
                     //it switches to being chased by the ghosts on that maze. This way, ghosts arent going between mazes and leaving 1 maze empty and 1 maze full.
-                    //This also means pacman could exploit the game by just staying in between mazes, however, the ghost maze wall will stop that, forcing pacman to move up.
                 }
 
             }
@@ -209,11 +208,10 @@ public class MazeGenerator : TileMap
 
     }
 
-    private void AddNode(Vector2 nodeLocation)
+    private void AddNode(Vector2 nodeLocation) //adds a node making sure there are no duplicates while adding to nodelist for use in adjList
     {
-        if (nodeTilemap.GetCellv(nodeLocation) != NODE) //makes sure theres no duplicates... in a perfect world i would not need this
+        if (nodeTilemap.GetCellv(nodeLocation) != NODE) //makes sure theres no duplicates. I probably dont need this but just in case lol
         {
-            //SetCellv(nodeLocation, -1); //deletes tile so will remove wall node that collides (probably dont actually need this but just in case lol)
             nodeTilemap.SetCellv(nodeLocation, NODE); //turns it into an actual path node tile
 
             nodeList.Add(nodeLocation);
@@ -221,7 +219,7 @@ public class MazeGenerator : TileMap
         }
         else
         {
-            GD.Print("found bad node");
+            GD.Print("found bad node"); //debug
         }
     }
 
@@ -287,7 +285,7 @@ public class MazeGenerator : TileMap
             else
             {
                 backtrackCount++;
-                if (backtrackCount == 1)
+                if (backtrackCount == 1) //if theres a dead end remove it to get braid maze
                 {
                     FixDeadEnds(curr);
                 }
@@ -295,8 +293,8 @@ public class MazeGenerator : TileMap
 
             if (idfStack.Count <= 0)
             { //While stack is not empty, (if stack is empty)
-                FixDeadEnds(curr);
-                PrepMazeForJoin(7); //dependancy on gameScr.Get(mazesOnTheScreen)
+                FixDeadEnds(curr); //remove the dead end on the source tile
+                PrepMazeForJoin(7); //originally 7 holes to travel between each maze
 
                 generationComplete = true;
 
@@ -308,7 +306,7 @@ public class MazeGenerator : TileMap
 
     //------------------------------------------------------Adjacency Matrix/List stuff-------------------------------------------------------------------------
 
-    private int ConvertVectorToInt(Vector2 temp)
+    private int ConvertVectorToInt(Vector2 temp) //used to find distance between neighbouring nodes
     {
 
         if (temp.x == 0)
@@ -321,7 +319,7 @@ public class MazeGenerator : TileMap
         }
     }
 
-    private void PrintNodeList()
+    private void PrintNodeList() //used for debugging
     {
         GD.Print("Printing NodeList: ");
         foreach (var thing in nodeList)
@@ -330,31 +328,13 @@ public class MazeGenerator : TileMap
         }
     }
 
-    private void GenerateNodeList() //currently not using this, if i find out the AddNode stuff doesnt work then use this instead
-    {
-
-        for (int i = 1; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                if (nodeTilemap.GetCell(j, i) == NODE)
-                {
-                    nodeList.Add(new Vector2(j, i));
-                }
-            }
-        }
-        PrintNodeList();
-    }
-
-    private bool IfWallOrNodeBetween(Vector2 vec1, Vector2 vec2)
+    private bool IfWallOrNodeBetween(Vector2 vec1, Vector2 vec2) //if there is a wall or node between the 2 vectors they are not neighbouring
     {
         //vec1 should be the smaller vector
-        //GD.Print("IfOnWall: " + " Vec1: " + vec1 + ", Vec2: " + vec2);
-        //TileMap mazeTilemap = GetNode<TileMap>("MazeTilemap");
 
-        if (vec1.x == vec2.x)
+        if (vec1.x == vec2.x) //if theyre on the same x
         {
-            for (int y = (int)vec1.y; (int)y < vec2.y; y++)
+            for (int y = (int)vec1.y; (int)y < vec2.y; y++) //scan vertically to see if theres wall or node between them
             {
                 if ((GetCell((int)vec1.x, y) == WALL) || (nodeTilemap.GetCell((int)vec1.x, y) == NODE && y != vec1.y && y != vec2.y))
                 {
@@ -364,9 +344,9 @@ public class MazeGenerator : TileMap
             }
             return false;
         }
-        else if (vec1.y == vec2.y)
+        else if (vec1.y == vec2.y) //if theyre on the same y
         {
-            for (int x = (int)vec1.x; (int)x < vec2.x; x++)
+            for (int x = (int)vec1.x; (int)x < vec2.x; x++) //scan horizontally to see if wall or node between them
             {
                 if (GetCell(x, (int)vec1.y) == WALL || (nodeTilemap.GetCell(x, (int)vec1.y) == NODE && x != vec1.x && x != vec2.x))
                 {
@@ -375,7 +355,7 @@ public class MazeGenerator : TileMap
             }
             return false;
         }
-        else
+        else //if theyre not on the same x or y then their is always a wall or node between them
         {
             return true;
         }
@@ -386,6 +366,7 @@ public class MazeGenerator : TileMap
     {
         int numFound = 0;
 
+        //creates adjList which is a list where each tile has a list containing a tuple for each neighbour with (neighbour node, distance to node)
         adjacencyList = new LinkedList<Tuple<Vector2, int>>[nodeList.Count];
         for (int i = 0; i < adjacencyList.Length; i++)
         {
@@ -400,7 +381,7 @@ public class MazeGenerator : TileMap
 
                 Vector2 v1 = nodeList[i];
                 Vector2 v2 = nodeList[j];
-                if (v1.x == v2.x || v1.y == v2.y)
+                if (v1.x == v2.x || v1.y == v2.y) //vectors must be on same column/row to be neighbours
                 {
                     Vector2 vec1;
                     Vector2 vec2;
@@ -416,9 +397,9 @@ public class MazeGenerator : TileMap
                         vec2 = v1;
                     }
 
-                    int neighbourVal = ConvertVectorToInt(vec2 - vec1);
+                    int neighbourVal = ConvertVectorToInt(vec2 - vec1); //gets distance between the vectors
                     //if on wall, no edge, else put weight
-                    if (numFound <= 3)
+                    if (numFound <= 3) //as theres only 4 direcitons there should be at most 3 neighbours to every tile
                     {
                         if ((!IfWallOrNodeBetween(vec1, vec2)) && (neighbourVal != 0))
                         {
@@ -430,7 +411,7 @@ public class MazeGenerator : TileMap
                     }
                     else
                     {
-                        break; //breaks out of for loop if >=5 i hope
+                        break; //doesnt allow more than 3 neighbours
                     }
 
                 }
@@ -440,7 +421,7 @@ public class MazeGenerator : TileMap
         return adjacencyList;
     }
 
-    private void PrintAdjList(LinkedList<Tuple<Vector2, int>>[] adjacencyList)
+    private void PrintAdjList(LinkedList<Tuple<Vector2, int>>[] adjacencyList) //debug purposes
     {
         int i = 0;
 
@@ -461,7 +442,7 @@ public class MazeGenerator : TileMap
 
     //--------------------------------------Other functions --------------------------------------------------------------------
 
-    private Vector2 SetRandomSpawnOnPath() //probably place this somewhere else or make global idk
+    private Vector2 SetRandomSpawnOnPath() //used to spawn the powerups
     {
         Random rnd = new Random();
 
@@ -483,9 +464,7 @@ public class MazeGenerator : TileMap
         return spawnLoc;
     }
 
-    //--------------------------------------------End of Other Functions--------------------------------------------------------------
-
-    public override void _ExitTree()
+    public override void _ExitTree() //built in godot method called when the scene is removed from scenetree, makes sure to delete everything
     {
         powerupFactory.QueueFree(); //powerupfactory is never added to scene tree so must be explcicity freed
         GetParent().QueueFree();

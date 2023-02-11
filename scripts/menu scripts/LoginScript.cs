@@ -5,11 +5,7 @@ using System.Collections.Generic;
 
 public class LoginScript : Control
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-    //have really long string here as a private const for the pepper (potentially?)
-    private const string pepper = "VBU^(v9Vum#$/04a14V>wS"; //20 char
+    private const string pepper = "VBU^(v9Vum#$/04a14V>wS(^0EfQRs6#o<"; //32 char
     private LineEdit usernameInput;
     private LineEdit passwordInput;
     private Label notification;
@@ -38,10 +34,9 @@ public class LoginScript : Control
         //add salt and pepper to password and hash, check if hash = hash in database. 
         //If so, login, else error
 
-        GD.Print("login button pressed"); //remember to commect these out
-        GD.Print(usernameInput.Text);   //debug
-        GD.Print(passwordInput.Text);
-        //put code here
+        //GD.Print("login button pressed"); //remember to commect these out
+        // GD.Print(usernameInput.Text);   //debug
+        // GD.Print(passwordInput.Text);
 
         if (IsInputValid(usernameInput.Text, passwordInput.Text))
         {
@@ -53,7 +48,7 @@ public class LoginScript : Control
             {
                 string[] usernameParam = new string[] { usernameInput.Text };
                 var saltQuery = database.Call("queryDBwithParameters", "SELECT Salt FROM PlayerInfo WHERE Username = ?;", usernameParam);
-                //this var above is an array of dictoinaries
+                //this var above is a godot array of dictoinaries
 
                 Godot.Collections.Array returnedSaltArray = (Godot.Collections.Array)database.Call("queryValue", saltQuery); //returns an object, must be cast to array
                 string userSalt = (string)returnedSaltArray[0];
@@ -94,14 +89,15 @@ public class LoginScript : Control
             }
             else
             {
-                string newSalt = GenerateSalt(20); //if not, generate salt and do password + salt + pepper & hash it
+                string newSalt = GenerateSalt(32);
                 string password = passwordInput.Text + newSalt + pepper;
-                password = password.SHA256Text();
+                password = password.SHA256Text(); //secures passwords so theyre not stored in plaintext in database
 
 
                 string[] newRecordParam = new string[] { usernameInput.Text, password, newSalt };
                 database.Call("queryDBwithParameters", "INSERT INTO PlayerInfo (Username, Password, Salt) VALUES (?, ?, ?);", newRecordParam);
                 //adds new record to playerInfo, with username, password and salt
+                notification.Text = "account created";
             }
         }
     }
@@ -130,7 +126,7 @@ public class LoginScript : Control
         }
     }
 
-    private bool IsInputValid(string username, string password)
+    private bool IsInputValid(string username, string password) //validates input
     {
         if (username.Empty() || password.Empty())
         {
@@ -171,7 +167,7 @@ public class LoginScript : Control
         return salt;
     }
 
-    private bool ContainsInvalidWords(string input)
+    private bool ContainsInvalidWords(string input) //used to prevent SQL injection
     {
         string[] invalidWords = new string[] { "create", "drop", "table", "index", "alter", "insert", "select", "update", "delete", "database", "into" };
 

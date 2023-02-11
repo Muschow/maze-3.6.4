@@ -13,7 +13,7 @@ public abstract class ItemPickupScript : Sprite
         game = GetNode<GameScript>("/root/Game");
     }
 
-    public void _OnItemAreaEntered(Area area)
+    public void _OnItemAreaEntered(Area area) //allows items to get picked up
     {
         //GD.Print(area.Name);
         if (area.Name == "PacmanArea")

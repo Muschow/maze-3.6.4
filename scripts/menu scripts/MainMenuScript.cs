@@ -10,7 +10,7 @@ public class MainMenuScript : Control
 
     private void _OnQuitButtonPressed()
     {
-        PrintStrayNodes();
+        PrintStrayNodes(); //debug
         GetTree().Quit();
     }
 }
