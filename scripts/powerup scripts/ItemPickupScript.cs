@@ -15,7 +15,7 @@ public abstract class ItemPickupScript : Sprite
 
     public void _OnItemAreaEntered(Area area) //allows items to get picked up
     {
-        //GD.Print(area.Name);
+        //GD.Print(area.Name); //debug
         if (area.Name == "PacmanArea")
         {
             game.score += (int)(baseScore * game.scoreMultiplier);

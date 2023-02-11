@@ -95,7 +95,7 @@ public class PacmanScript : CharacterScript
 
         if (area.Name == "KillArea")
         {
-            GD.Print("pacman hit killwall, game over");
+            //GD.Print("pacman hit killwall, game over"); //debug
             game.GameOver();
         }
     }

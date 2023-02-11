@@ -58,7 +58,7 @@ public class GhostScript : CharacterScript
     //As GhostScript is a base class, it will not be in the scene tree.
     public override void _Ready()
     {
-        GD.Print("ghostscript ready");
+        GD.Print("ghostscript ready"); //debug
 
         GetNodes();
 
@@ -136,7 +136,7 @@ public class GhostScript : CharacterScript
     {
         ghostIsVulnerable = true;
         vulnerableTimer.Start(15); //vulnerable mode lasts 15 seconds
-        GD.Print("entered vulnerable state");
+        //GD.Print("entered vulnerable state"); //debug
     }
 
     private void _OnResetChasePathTimeout() //recalculates pathfinding when timer timeouts
@@ -154,7 +154,7 @@ public class GhostScript : CharacterScript
     private void _OnPatrolTimerTimeout()
     {
         defaultTarget = true; //resets back to default target if its been changed (eg from decoy)
-        GD.Print("patroltimertimeout default target", defaultTarget);
+        //GD.Print("patroltimertimeout default target", defaultTarget); //debug
         EnterState(states.chase); //when patrol is done switch to chase
 
     }
@@ -249,7 +249,7 @@ public class GhostScript : CharacterScript
         {
             Position = Position.MoveToward(mazeTm.MapToWorld(paths[pathCounter]) + MazeGenerator.halfCellSize, delta * speed); //delta*speed makes it so speed is consistent regardless of frame rate
             MoveAnimManager(paths[pathCounter] - mazeTm.WorldToMap(Position), ghostEyes);
-            // GD.Print("Position ", Position);
+            // GD.Print("Position ", Position); //debug
         }
     }
 
@@ -270,7 +270,7 @@ public class GhostScript : CharacterScript
             if (pathCounter < paths.Count)
             {
                 MoveToAndValidatePos(delta);
-                //GD.Print(pathCounter);
+                //GD.Print(pathCounter); //debug
             }
             else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
             {
@@ -287,12 +287,12 @@ public class GhostScript : CharacterScript
     //move to a random position on the maze its on and recalculate once path is complete. done to spread out ghosts and so player isnt always chased.
     private void GhostPatrol(float delta)
     {
-        //GD.Print(patrolTimer.WaitTime);
+        //GD.Print(patrolTimer.WaitTime); //debug
 
         if (pathCounter < paths.Count)
         {
             MoveToAndValidatePos(delta);
-            //GD.Print(pathCounter);
+            //GD.Print(pathCounter); //debug
         }
         else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
         {
@@ -307,7 +307,7 @@ public class GhostScript : CharacterScript
     //the code for killing a ghost when vulnerable is in GhostAreaEntered signal
     private void GhostVulnerable(float delta)
     {
-        //GD.Print("VULNERABLE STATE");
+        //GD.Print("VULNERABLE STATE"); //debug
 
         ghostBody.Modulate = Colors.White; //all ghosts body is white so the vulnerable skin isnt some wierd hue
         ghostEyes.Visible = false; //the eyes are turned off as the vulnerable ghost skin has built in eyes.
@@ -319,12 +319,12 @@ public class GhostScript : CharacterScript
     {
         if (ghostState == states.patrol)
         {
-            //GD.Print("PATROL STATE-----------------------------------------");
+            //GD.Print("PATROL STATE-----------------------------------------"); //debug
             GhostPatrol(delta);
         }
         else if (ghostState == states.chase)
         {
-            //GD.Print("CHASE STATE-----------------------------------------");
+            //GD.Print("CHASE STATE-----------------------------------------"); //debug
             GhostChase(delta);
         }
 

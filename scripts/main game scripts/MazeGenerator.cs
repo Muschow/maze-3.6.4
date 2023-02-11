@@ -46,7 +46,7 @@ public class MazeGenerator : TileMap
     //Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GD.Print("mazegen ready");
+        //GD.Print("mazegen ready"); //debug
 
         GD.Randomize();
         GetNodes();
@@ -58,7 +58,7 @@ public class MazeGenerator : TileMap
         GenerateAdjList();
         AddRandomPowerups();
 
-        GD.Print("nodeList Count: " + nodeList.Count); //debug
+        //GD.Print("nodeList Count: " + nodeList.Count); //debug
     }
 
     private void GetNodes()
@@ -98,8 +98,8 @@ public class MazeGenerator : TileMap
         {
             height -= 1;
         }
-        GD.Print("width " + width);
-        GD.Print("height " + height);
+        GD.Print("width " + width); //debug
+        GD.Print("height " + height); //debug
     }
 
     private void CreateStartingGrid() //is a grid of path tiles, each surrounded by walls. top is empty, bottom has a wall edge.
@@ -172,15 +172,15 @@ public class MazeGenerator : TileMap
             {
                 SetCellv(topWallCell + Vector2.Down, PATH);
                 AddPellet(topWallCell + Vector2.Down);
-                //GD.Print("set " + new Vector2(removeCell + south) + " path");
-                //GD.Print("set cell+south path");
+                //GD.Print("set " + new Vector2(removeCell + south) + " path"); //debug
+                //GD.Print("set cell+south path"); //debug
             }
 
             //on the top layer, if there isnt a node where there should be one due to removing the top wall, place one
             if (GetCellv(topWallCell + (Vector2.Down * 2)) == PATH && nodeTilemap.GetCellv(topWallCell + Vector2.Down) != NODE)
             {
                 AddNode(topWallCell + Vector2.Down);
-                //GD.Print("addNode " + new Vector2(topWallCell + south));
+                //GD.Print("addNode " + new Vector2(topWallCell + south)); //debug
             }
         }
 
@@ -219,7 +219,7 @@ public class MazeGenerator : TileMap
         }
         else
         {
-            GD.Print("found bad node"); //debug
+            //GD.Print("found bad node"); //debug
         }
     }
 
@@ -338,7 +338,7 @@ public class MazeGenerator : TileMap
             {
                 if ((GetCell((int)vec1.x, y) == WALL) || (nodeTilemap.GetCell((int)vec1.x, y) == NODE && y != vec1.y && y != vec2.y))
                 {
-                    //GD.Print("reached get cell x: " + vec1.x + ",y: " + y);
+                    //GD.Print("reached get cell x: " + vec1.x + ",y: " + y); //debug
                     return true;
                 }
             }
@@ -456,11 +456,11 @@ public class MazeGenerator : TileMap
         }
 
         Vector2 spawnLoc = new Vector2(x, y);
-        GD.Print("spawn" + spawnLoc); //debug
+        //GD.Print("spawn" + spawnLoc); //debug
 
         spawnLoc = new Vector2(MapToWorld(spawnLoc) + halfCellSize);
 
-        GD.Print("MTWspawnLoc: " + spawnLoc); //debug
+        //GD.Print("MTWspawnLoc: " + spawnLoc); //debug
         return spawnLoc;
     }
 

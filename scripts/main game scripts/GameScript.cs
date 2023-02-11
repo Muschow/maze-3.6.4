@@ -37,7 +37,7 @@ public class GameScript : Node2D
     }
     public override void _Ready()
     {
-        GD.Print("Game ready");
+        GD.Print("Game ready"); //debug
 
 
         GetNodes();
@@ -90,13 +90,13 @@ public class GameScript : Node2D
         mazeContainer.AddChild(mazeInstance, true);
 
         mazesOnTheScreen++;
-        GD.Print("instanced maze!");
+        //GD.Print("instanced maze!"); //debug
 
         if (mazeContainer.GetChildCount() > 3) //if more than 3 mazes, remove maze
         {
             mazeContainer.GetChild(0).QueueFree(); //get and delete the first child of the MazeContainer node. The first child will be the oldest Maze node instance
             mazesOnTheScreen--;
-            GD.Print("removed maze!");
+            //GD.Print("removed maze!"); //debug
 
         }
         //PrintTreePretty(); //debug, remove later

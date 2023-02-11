@@ -107,7 +107,7 @@ public class Movement : Node
 
             if (curIndex == -1) //debug purposes only, can get rid of it
             {
-                GD.Print("Could not find current node in nodeList");
+                //GD.Print("Could not find current node in nodeList"); //debug
             }
 
             int neighbourVal = 0;

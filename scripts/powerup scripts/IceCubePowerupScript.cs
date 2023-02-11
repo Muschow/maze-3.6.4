@@ -24,7 +24,7 @@ public class IceCubePowerupScript : ItemPickupScript
 
     private void _OnPowerupTimerTimeout()    //on timer timeout, reset everything and delete powerup
     {
-        GD.Print("onpoweruptimertimeout");
+        //GD.Print("onpoweruptimertimeout"); //debug
         //EmitSignal change speedModifier back
         newSpeedModifier = 1;
         game.EmitSignal("ChangeSpeedModifier", newSpeedModifier);

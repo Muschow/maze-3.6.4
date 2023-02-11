@@ -5,7 +5,7 @@ public class PowerPelletScript : ItemPickupScript
 {
     public override void ItemAbility()
     {
-        GD.Print("POWERPELLET EATEN");
+        //GD.Print("POWERPELLET EATEN"); //debug
         game.EmitSignal("PowerPelletActivated"); //signal found in ghost script
         QueueFree();
     }

@@ -79,8 +79,8 @@ public class LoginScript : Control
 
     private void _OnCreateAccountButtonPressed()
     {
-        GD.Print("create account button pressed");
-        //put code here
+        //GD.Print("create account button pressed"); //debug
+
         if (IsInputValid(usernameInput.Text, passwordInput.Text)) //does input have sql injection/empty
         {
             if (ExistsInDB(IsUsernameInDBQuery())) //does username exist in db
@@ -163,7 +163,7 @@ public class LoginScript : Control
 
         }
 
-        GD.Print("salt: ", salt);
+        //GD.Print("salt: ", salt); //debug
         return salt;
     }
 
@@ -175,7 +175,7 @@ public class LoginScript : Control
         {
             if (input.ToLower().Contains(invalidWords[i]))
             {
-                GD.Print("use of invalid word");
+                //GD.Print("use of invalid word"); //debug
                 return true;
             }
         }

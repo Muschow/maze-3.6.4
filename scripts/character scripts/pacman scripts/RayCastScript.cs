@@ -50,7 +50,7 @@ public class RayCastScript : Node2D
 
     public bool RaysAreColliding(Vector2 nextDir) //next direction of object, eg WASD input for pacman or next dir for ghost
     {
-        //GD.Print("rays colldiing getting called");
+        //GD.Print("rays colldiing getting called"); //debug
         if (nextDir == Vector2.Zero) //initial
         {
             return true;
