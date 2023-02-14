@@ -27,7 +27,7 @@ public class GameOverScript : Control
 
         //gets name and score of top 10 scores
         var scoreQueryResult = database.Call("queryDB", "SELECT PlayerInfo.Username, HighScores.Score FROM PlayerInfo INNER JOIN HighScores ON PlayerInfo.Id = HighScores.PlayerId ORDER BY Score DESC LIMIT 10;");
-        Godot.Collections.Array returnedScoreValues = (Godot.Collections.Array)database.Call("queryValue", scoreQueryResult);
+        Godot.Collections.Array returnedScoreValues = (Godot.Collections.Array)database.Call("queryValue", scoreQueryResult); //returns array of username, score, username, score etc...
 
         //sorts the godot.collections.array of values returned into more usable, 2 lists: nameList and scoreList
         List<string> nameList = new List<string>();
