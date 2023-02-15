@@ -53,7 +53,7 @@ public class GhostScript : CharacterScript
     private Globals globals;
     private GameScript game;
 
-    //--------------------------------------------------------------------
+    //----------------------------------------------------Ready and Process----------------------------------------------------------------------------
 
     //As GhostScript is a base class, it will not be in the scene tree.
     public override void _Ready()
@@ -90,6 +90,8 @@ public class GhostScript : CharacterScript
         ProcessStates(delta); //does everything in regards to ghosts states, eg chase, patrol
     }
 
+    //-------------------------------------------------------GetNodes and connecting signals functions--------------------------------------
+
     private void ConnectGhostSignals() //connect the signals from game script to the methods in this script
     {
         game.Connect("PowerPelletActivated", this, "_OnPowerPelletActivated");
@@ -118,6 +120,8 @@ public class GhostScript : CharacterScript
         ghostEyes = GetNode<AnimatedSprite>("GhostEyes");
     }
 
+    //---------------------------------------------------processing/entering state functions---------------------------------------
+
     private void EnterState(states newGhostState) //whenever a ghost enters a new state, start timers for specific state. Used in Finite State Machine for ghost behaviour
     {
         if (newGhostState == states.patrol)
@@ -131,14 +135,84 @@ public class GhostScript : CharacterScript
         ghostState = newGhostState;
     }
 
+    private void ProcessStates(float delta)
+    {
+        if (ghostState == states.patrol)
+        {
+            //GD.Print("PATROL STATE-----------------------------------------"); //debug
+            GhostPatrol(delta);
+        }
+        else if (ghostState == states.chase)
+        {
+            //GD.Print("CHASE STATE-----------------------------------------"); //debug
+            GhostChase(delta);
+        }
 
-    private void EnterGhostVulnerable() //vulnerable allows ghost to be killed. Vulnerable is not in the FSM as when vulnerable, it can still be in patrol/chase
+    }
+
+    //--------------------------------------Ghost 'states' although vulnerable is seperate------------------------------------------
+
+    private void GhostVulnerable() //vulnerable allows ghost to be killed. Vulnerable is not in the FSM as when vulnerable, it can still be in patrol/chase
     {
         ghostIsVulnerable = true;
         vulnerableTimer.Start(15); //vulnerable mode lasts 15 seconds
+
+        ghostBody.Modulate = Colors.White; //all ghosts body is white so the vulnerable skin isnt some wierd hue
+        ghostEyes.Visible = false; //the eyes are turned off as the vulnerable ghost skin has built in eyes.
+        ghostBody.Play("vulnerable"); //applies the vulnerable skin
         //GD.Print("entered vulnerable state"); //debug
     }
 
+    //determines the ghosts behaviour in chase mode.
+    //checks if on the same maze as pacman, if not go in patrol. This is so lots of more intensive movement calculations dont have to be done
+    //and the ghosts can be well spread out across mazes so every single ghost in the game doesnt chase after you
+    //if on the same maze, move towards pacman until path is complete, then recalculate
+    private void GhostChase(float delta)
+    {
+        if (mazeTm.WorldToMap(pacman.Position).y < (mazeTm.mazeOriginY + mazeTm.height - 1))
+        {
+            if (IsOnNode(source) && recalculate) //every x seconds, if ghost is on a node, it recalulates shortest path.
+            {
+                recalculate = false;
+                FindNewPath(source, target);
+            }
+
+            if (pathCounter < paths.Count)
+            {
+                MoveToAndValidatePos(delta);
+                //GD.Print(pathCounter); //debug
+            }
+            else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
+            {
+                FindNewPath(source, target);
+            }
+        }
+        else
+        {
+            EnterState(states.patrol);
+        }
+
+    }
+
+    //move to a random position on the maze its on and recalculate once path is complete. done to spread out ghosts and so player isnt always chased.
+    private void GhostPatrol(float delta)
+    {
+        //GD.Print(patrolTimer.WaitTime); //debug
+
+        if (pathCounter < paths.Count)
+        {
+            MoveToAndValidatePos(delta);
+            //GD.Print(pathCounter); //debug
+        }
+        else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
+        {
+
+            int randNodeIndex = (int)GD.RandRange(0, moveScr.nodeList.Count);
+            FindNewPath(source, moveScr.nodeList[randNodeIndex]); //target is instead a random node
+        }
+    }
+
+    //---------------------------------------------------------Timer functions-----------------------------------------------
     private void _OnResetChasePathTimeout() //recalculates pathfinding when timer timeouts
     {
         recalculate = true; //every x seconds, set recalculate to true
@@ -166,6 +240,8 @@ public class GhostScript : CharacterScript
         ghostBody.Play("walk");
         ghostEyes.Visible = true;
     }
+
+    //------------------------------------------------Movement and position functions--------------------------------------------
 
     //isonnode used to check if can turn and if valid target vector for the movement script as the adjacency list used for movement only contains nodes
     protected bool IsOnNode(Vector2 pos) //make sure to pass in a worldtomap vector. 
@@ -253,98 +329,16 @@ public class GhostScript : CharacterScript
         }
     }
 
-    //determines the ghosts behaviour in chase mode.
-    //checks if on the same maze as pacman, if not go in patrol. This is so lots of more intensive movement calculations dont have to be done
-    //and the ghosts can be well spread out across mazes so every single ghost in the game doesnt chase after you
-    //if on the same maze, move towards pacman until path is complete, then recalculate
-    private void GhostChase(float delta)
-    {
-        if (mazeTm.WorldToMap(pacman.Position).y < (mazeTm.mazeOriginY + mazeTm.height - 1))
-        {
-            if (IsOnNode(source) && recalculate) //every x seconds, if ghost is on a node, it recalulates shortest path.
-            {
-                recalculate = false;
-                FindNewPath(source, target);
-            }
-
-            if (pathCounter < paths.Count)
-            {
-                MoveToAndValidatePos(delta);
-                //GD.Print(pathCounter); //debug
-            }
-            else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
-            {
-                FindNewPath(source, target);
-            }
-        }
-        else
-        {
-            EnterState(states.patrol);
-        }
-
-    }
-
-    //move to a random position on the maze its on and recalculate once path is complete. done to spread out ghosts and so player isnt always chased.
-    private void GhostPatrol(float delta)
-    {
-        //GD.Print(patrolTimer.WaitTime); //debug
-
-        if (pathCounter < paths.Count)
-        {
-            MoveToAndValidatePos(delta);
-            //GD.Print(pathCounter); //debug
-        }
-        else if (pathCounter >= paths.Count) //if its reached the end of its path, calculate new path
-        {
-
-            int randNodeIndex = (int)GD.RandRange(0, moveScr.nodeList.Count);
-            FindNewPath(source, moveScr.nodeList[randNodeIndex]); //target is instead a random node
-        }
-    }
-
-    //ghostvulnerable used when power pellet eaten.
-    //when vulnerable (power pellet eaten), ghosts change animation, do random movements
-    //the code for killing a ghost when vulnerable is in GhostAreaEntered signal
-    private void GhostVulnerable(float delta)
-    {
-        //GD.Print("VULNERABLE STATE"); //debug
-
-        ghostBody.Modulate = Colors.White; //all ghosts body is white so the vulnerable skin isnt some wierd hue
-        ghostEyes.Visible = false; //the eyes are turned off as the vulnerable ghost skin has built in eyes.
-
-        ghostBody.Play("vulnerable"); //applies the vulnerable skin
-    }
-
-    private void ProcessStates(float delta)
-    {
-        if (ghostState == states.patrol)
-        {
-            //GD.Print("PATROL STATE-----------------------------------------"); //debug
-            GhostPatrol(delta);
-        }
-        else if (ghostState == states.chase)
-        {
-            //GD.Print("CHASE STATE-----------------------------------------"); //debug
-            GhostChase(delta);
-        }
-
-        if (ghostIsVulnerable) //can be vulnerable and in patrol/chase at the same time. This is so it still moves around
-        {
-            GhostVulnerable(delta);
-        }
-
-    }
-
     public virtual void UpdateTarget() //default target is pacman
     {
 
         target = FindClosestNodeTo(mazeTm.WorldToMap(pacman.Position));
     }
 
-    //----------------------------These 2 signals are for if ghosts overlap each other. Gives them random speed increase so they dont overlap---------------------------------------
+    //----------------------------ghost collision functions (either with other ghosts or pacman)---------------------------------------
     private bool hasIntersectedBefore = false;
     protected float oldSpeed;
-    private void _OnGhostAreaEntered(Area2D area) //if 2 ghosts are ontop of each other, randomly increase speed so they move away
+    private void _OnGhostAreaEntered(Area2D area) //if 2 ghosts are ontop of each other, randomly decrease speed so they move away
     {
         if (hasIntersectedBefore == false)
         {
@@ -370,7 +364,7 @@ public class GhostScript : CharacterScript
 
     private void _OnPowerPelletActivated()
     {
-        EnterGhostVulnerable();
+        GhostVulnerable();
         pacman.EnableInvincibility(vulnerableTimer.TimeLeft); //pacman is invincible for the duration of vulnerable mode so he can collide and kill ghosts without losing health.
     }
 
@@ -390,7 +384,7 @@ public class GhostScript : CharacterScript
         searchingAlgo = (algo)rnd.Next(0, algoLength);
     }
 
-    private void _OnChangeSpeedModifierActivated(float newSpeedModifier) //allows me to change speed via a signal, very nice
+    private void _OnChangeSpeedModifierActivated(float newSpeedModifier) //allows me to change speed via a signal
     {
         speedModifier = newSpeedModifier;
     }
