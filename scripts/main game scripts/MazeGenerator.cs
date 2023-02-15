@@ -311,19 +311,6 @@ public class MazeGenerator : TileMap
 
     //------------------------------------------------------Adjacency Matrix/List stuff-------------------------------------------------------------------------
 
-    // private int ConvertVectorToInt(Vector2 temp) //used to find distance between neighbouring nodes
-    // {
-
-    //     if (temp.x == 0)
-    //     {
-    //         return (int)Math.Abs(temp.y);
-    //     }
-    //     else
-    //     {
-    //         return (int)Math.Abs(temp.x);
-    //     }
-    // }
-
     private void PrintNodeList() //used for debugging
     {
         GD.Print("Printing NodeList: ");
