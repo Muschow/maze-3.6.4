@@ -5,6 +5,9 @@ public class GameScript : Node2D
 {
 
     public const int INFINITY = 9999; //used in movement, killwall, generally to denote something thats not got a value yet eg initally, shortestval = infinity 
+    private const int MAX_MAZES = 3;
+    private const int WIN_DISTANCE = 512;
+    private const int UPGRADE_LIVES_INCREASE = 500;
     public static float gameSpeed;
     [Export] private float gameSpeedInc = 0.20f;
     private int upgradeLivesCost = 500;
@@ -51,7 +54,7 @@ public class GameScript : Node2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
     {
-        if (Math.Floor(pacman.Position.y / 32) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
+        if (Math.Floor(pacman.Position.y / MazeGenerator.CELLSIZE) == mazeStartLoc + mazeTm.height - 2) //if pacman goes on the join between 2 mazes, instance new and remove old maze
         {
             GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
             InstanceAndRemoveMazes();
@@ -64,7 +67,7 @@ public class GameScript : Node2D
             GameOver();
         }
 
-        if (travelDist >= 512)
+        if (travelDist >= WIN_DISTANCE)
         {
             global.gameWon = true;
             GameOver();
@@ -92,7 +95,7 @@ public class GameScript : Node2D
         mazesOnTheScreen++;
         //GD.Print("instanced maze!"); //debug
 
-        if (mazeContainer.GetChildCount() > 3) //if more than 3 mazes, remove maze
+        if (mazeContainer.GetChildCount() > MAX_MAZES) //if more than 3 mazes, remove maze
         {
             mazeContainer.GetChild(0).QueueFree(); //get and delete the first child of the MazeContainer node. The first child will be the oldest Maze node instance
             mazesOnTheScreen--;
@@ -145,7 +148,7 @@ public class GameScript : Node2D
     private void PurchaseLifeUpgrade()
     {
         score -= upgradeLivesCost;
-        upgradeLivesCost += 500;
+        upgradeLivesCost += UPGRADE_LIVES_INCREASE;
     }
 
     private void StartNewGame() //reset static variables or anything else that isnt automatically reset

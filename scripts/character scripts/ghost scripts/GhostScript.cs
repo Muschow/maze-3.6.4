@@ -272,7 +272,7 @@ public class GhostScript : CharacterScript
             {
                 if ((node.y == targetVector.y || node.x == targetVector.x) && (node != targetVector))
                 {
-                    int currShortestInt = Math.Abs(moveScr.ConvertVecToInt(targetVector - node));
+                    int currShortestInt = Math.Abs(Globals.ConvertVectorToInt(targetVector - node));
                     if (currShortestInt < shortestInt)
                     {
                         shortestInt = currShortestInt;

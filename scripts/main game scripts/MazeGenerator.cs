@@ -311,18 +311,18 @@ public class MazeGenerator : TileMap
 
     //------------------------------------------------------Adjacency Matrix/List stuff-------------------------------------------------------------------------
 
-    private int ConvertVectorToInt(Vector2 temp) //used to find distance between neighbouring nodes
-    {
+    // private int ConvertVectorToInt(Vector2 temp) //used to find distance between neighbouring nodes
+    // {
 
-        if (temp.x == 0)
-        {
-            return (int)Math.Abs(temp.y);
-        }
-        else
-        {
-            return (int)Math.Abs(temp.x);
-        }
-    }
+    //     if (temp.x == 0)
+    //     {
+    //         return (int)Math.Abs(temp.y);
+    //     }
+    //     else
+    //     {
+    //         return (int)Math.Abs(temp.x);
+    //     }
+    // }
 
     private void PrintNodeList() //used for debugging
     {
@@ -388,25 +388,25 @@ public class MazeGenerator : TileMap
                 Vector2 v2 = nodeList[j];
                 if (v1.x == v2.x || v1.y == v2.y) //vectors must be on same column/row to be neighbours
                 {
-                    Vector2 vec1;
-                    Vector2 vec2;
-                    //swaps so v1 is smaller (vec1) and v2 is bigger (vec2)
+                    Vector2 smallerVector;
+                    Vector2 biggerVector;
+                    //swaps so v1 is smaller and v2 is bigger
                     if (v1 <= v2)
                     {
-                        vec1 = v1;
-                        vec2 = v2;
+                        smallerVector = v1;
+                        biggerVector = v2;
                     }
                     else
                     {
-                        vec1 = v2;
-                        vec2 = v1;
+                        smallerVector = v2;
+                        biggerVector = v1;
                     }
 
-                    int neighbourVal = ConvertVectorToInt(vec2 - vec1); //gets distance between the vectors
+                    int neighbourVal = Globals.ConvertVectorToInt(biggerVector - smallerVector); //gets distance between the vectors
                     //if on wall, no edge, else put weight
                     if (numFound <= 3) //as theres only 4 direcitons there should be at most 3 neighbours to every tile
                     {
-                        if ((!IfWallOrNodeBetween(vec1, vec2)) && (neighbourVal != 0))
+                        if ((!IfWallOrNodeBetween(smallerVector, biggerVector)) && (neighbourVal != 0))
                         {
                             adjacencyList[i].AddLast(new Tuple<Vector2, int>(nodeList[j], neighbourVal));
                             //adjList[i, numFound] = nodeList[j];

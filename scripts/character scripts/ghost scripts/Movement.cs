@@ -8,28 +8,6 @@ public class Movement : Node
     public LinkedList<Tuple<Vector2, int>>[] adjList;
     public List<Vector2> nodeList;
 
-    //used to convert a (0,y) or (x,0) vector to an int. 
-    //This is so I can get a distance from neighoburing nodes.
-    public int ConvertVecToInt(Vector2 vector)
-    {
-        if (vector.x == 0)
-        {
-            return (int)vector.y;
-        }
-        else if (vector.y == 0)
-        {
-            return (int)vector.x;
-        }
-        else if (vector.x == 0 && vector.y == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return -1; //bascially error
-        }
-    }
-
     //Heuristic is only used in A* algorithm so thats what the bool is for
     //It is used to make more accurate predictions on shortest path so not every path needs to be checked
     //I am using manhattan distance which is end coord - source added together. 
