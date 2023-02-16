@@ -320,27 +320,39 @@ public class MazeGenerator : TileMap
         }
     }
 
-    private bool IfWallOrNodeBetween(Vector2 vec1, Vector2 vec2) //if there is a wall or node between the 2 vectors they are not neighbouring
+    private bool IfWallOrNodeBetween(Vector2 v1, Vector2 v2) //if there is a wall or node between the 2 vectors they are not neighbouring
     {
-        //vec1 should be the smaller vector
-
-        if (vec1.x == vec2.x) //if theyre on the same x
+        Vector2 smallerV;
+        Vector2 biggerV;
+        //swaps so v1 is smaller and v2 is bigger
+        if (v1 <= v2)
         {
-            for (int y = (int)vec1.y; (int)y < vec2.y; y++) //scan vertically to see if theres wall or node between them
+            smallerV = v1;
+            biggerV = v2;
+        }
+        else
+        {
+            smallerV = v2;
+            biggerV = v1;
+        }
+
+        if (smallerV.x == biggerV.x) //if theyre on the same x
+        {
+            for (int y = (int)smallerV.y; (int)y < biggerV.y; y++) //scan vertically to see if theres wall or node between them
             {
-                if ((GetCell((int)vec1.x, y) == WALL) || (nodeTilemap.GetCell((int)vec1.x, y) == NODE && y != vec1.y && y != vec2.y))
+                if ((GetCell((int)smallerV.x, y) == WALL) || (nodeTilemap.GetCell((int)smallerV.x, y) == NODE && y != smallerV.y && y != biggerV.y))
                 {
-                    //GD.Print("reached get cell x: " + vec1.x + ",y: " + y); //debug
+                    //GD.Print("reached get cell x: " + smallerV.x + ",y: " + y); //debug
                     return true;
                 }
             }
             return false;
         }
-        else if (vec1.y == vec2.y) //if theyre on the same y
+        else if (smallerV.y == biggerV.y) //if theyre on the same y
         {
-            for (int x = (int)vec1.x; (int)x < vec2.x; x++) //scan horizontally to see if wall or node between them
+            for (int x = (int)smallerV.x; (int)x < biggerV.x; x++) //scan horizontally to see if wall or node between them
             {
-                if (GetCell(x, (int)vec1.y) == WALL || (nodeTilemap.GetCell(x, (int)vec1.y) == NODE && x != vec1.x && x != vec2.x))
+                if (GetCell(x, (int)smallerV.y) == WALL || (nodeTilemap.GetCell(x, (int)smallerV.y) == NODE && x != smallerV.x && x != biggerV.x))
                 {
                     return true;
                 }
@@ -370,30 +382,16 @@ public class MazeGenerator : TileMap
             numFound = 0;
             for (int j = 0; j < nodeList.Count; j++)
             {
-
                 Vector2 v1 = nodeList[i];
                 Vector2 v2 = nodeList[j];
+
                 if (v1.x == v2.x || v1.y == v2.y) //vectors must be on same column/row to be neighbours
                 {
-                    Vector2 smallerVector;
-                    Vector2 biggerVector;
-                    //swaps so v1 is smaller and v2 is bigger
-                    if (v1 <= v2)
-                    {
-                        smallerVector = v1;
-                        biggerVector = v2;
-                    }
-                    else
-                    {
-                        smallerVector = v2;
-                        biggerVector = v1;
-                    }
-
-                    int neighbourVal = Globals.ConvertVectorToInt(biggerVector - smallerVector); //gets distance between the vectors
+                    int neighbourVal = Math.Abs(Globals.ConvertVectorToInt(v1 - v2)); //gets distance between the vectors
                     //if on wall, no edge, else put weight
                     if (numFound <= 3) //as theres only 4 direcitons there should be at most 3 neighbours to every tile
                     {
-                        if ((!IfWallOrNodeBetween(smallerVector, biggerVector)) && (neighbourVal != 0))
+                        if ((!IfWallOrNodeBetween(v1, v2)) && (neighbourVal != 0))
                         {
                             adjacencyList[i].AddLast(new Tuple<Vector2, int>(nodeList[j], neighbourVal));
                             //adjList[i, numFound] = nodeList[j];
