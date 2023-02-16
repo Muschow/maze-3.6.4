@@ -4,7 +4,7 @@ using System;
 public class GameScript : Node2D
 {
 
-    public const int INFINITY = 9999; //used in movement, killwall, generally to denote something thats not got a value yet eg initally, shortestval = infinity 
+
     private const int MAX_MAZES = 3;
     private const int WIN_DISTANCE = 512;
     private const int UPGRADE_LIVES_INCREASE = 500;

@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 public class GhostScript : CharacterScript
 {
+    //Timer times
+    private const int VULNERABLE_TIME = 15;
+    private const int PATROLTIMER_MIN = 7;
+    private const int PATROLTIMER_MAX = 20;
+    private const int CHASETIMER_MIN = 10;
+    private const int CHASETIMER_MAX = 30;
 
     //-----------------------ghost properties----------------------
     private int baseScore = 500;
@@ -126,11 +132,11 @@ public class GhostScript : CharacterScript
     {
         if (newGhostState == states.patrol)
         {
-            patrolTimer.Start((float)GD.RandRange(7, 20));
+            patrolTimer.Start((float)GD.RandRange(PATROLTIMER_MIN, PATROLTIMER_MAX));
         }
         else if (newGhostState == states.chase)
         {
-            chaseTimer.Start((float)GD.RandRange(10, 30));
+            chaseTimer.Start((float)GD.RandRange(CHASETIMER_MIN, CHASETIMER_MAX));
         }
         ghostState = newGhostState;
     }
@@ -155,7 +161,7 @@ public class GhostScript : CharacterScript
     private void GhostVulnerable() //vulnerable allows ghost to be killed. Vulnerable is not in the FSM as when vulnerable, it can still be in patrol/chase
     {
         ghostIsVulnerable = true;
-        vulnerableTimer.Start(15); //vulnerable mode lasts 15 seconds
+        vulnerableTimer.Start(VULNERABLE_TIME); //vulnerable mode lasts 15 seconds
 
         ghostBody.Modulate = Colors.White; //all ghosts body is white so the vulnerable skin isnt some wierd hue
         ghostEyes.Visible = false; //the eyes are turned off as the vulnerable ghost skin has built in eyes.
@@ -265,8 +271,8 @@ public class GhostScript : CharacterScript
         if (!IsOnNode(targetVector))
         {
             //the node must have the same x or y as targetPos
-            int shortestInt = GameScript.INFINITY;
-            shortestNode = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
+            int shortestInt = Globals.INFINITY;
+            shortestNode = new Vector2(Globals.INFINITY, Globals.INFINITY);
 
             foreach (Vector2 node in moveScr.nodeList)
             {

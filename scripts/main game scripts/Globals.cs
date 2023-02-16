@@ -3,6 +3,7 @@ using System;
 
 public class Globals : Node
 {
+    public const int INFINITY = 9999; //used in movement, killwall, generally to denote something thats not got a value yet eg initally, shortestval = infinity 
     public int userId; //used for database
     public int userScore; //used for highscore
     public bool gameWon = false; //used so gameOver scene knows whether to show you win or you lose

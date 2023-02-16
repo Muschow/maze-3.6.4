@@ -112,7 +112,7 @@ public class PacmanScript : CharacterScript
     }
 
 
-    private Vector2 oldPos = new Vector2(GameScript.INFINITY, GameScript.INFINITY);
+    private Vector2 oldPos = new Vector2(Globals.INFINITY, Globals.INFINITY);
 
     //if new pos is higher than old pos increase distance... 
     //except in godot +y goes downwards so thats why its less than

@@ -37,7 +37,7 @@ public class KillWallScript : Sprite
         }
         else //otherwise move wall upwards constantly with speed of game
         {
-            Position = Position.MoveToward(new Vector2(Position.x, -GameScript.INFINITY), delta * (speed * GameScript.gameSpeed));
+            Position = Position.MoveToward(new Vector2(Position.x, -Globals.INFINITY), delta * (speed * GameScript.gameSpeed));
         }
     }
 }
