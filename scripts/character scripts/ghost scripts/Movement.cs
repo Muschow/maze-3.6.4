@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Movement : Node
+public class Movement
 {
     public LinkedList<Tuple<Vector2, int>>[] adjList;
     public List<Vector2> nodeList;
