@@ -3,14 +3,8 @@ using System;
 
 public class LLQueue
 {
-    private LLNode front; //frontpointer of q
-    private LLNode rear; //rearpointer of q
-
-    public LLQueue()
-    {
-        front = null; //initialise both to null
-        rear = null;
-    }
+    private LLNode front = null; //frontpointer of q, initialise to null
+    private LLNode rear = null; //rearpointer of q, initialise to null
 
     public void Enqueue(Vector2 valueToBeAdded)
     {

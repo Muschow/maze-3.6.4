@@ -3,13 +3,7 @@ using System;
 
 public class LLStack
 {
-    private LLNode top; //define the top pointer
-
-    public LLStack()
-    {
-        top = null; //initialise top pointer to null
-    }
-
+    private LLNode top = null; //define the top pointer, initialise to null
     public void Push(Vector2 valueToBePushed)
     {
         LLNode newNode = new LLNode(valueToBePushed); //create new node to be added to linked list containing data
@@ -20,7 +14,7 @@ public class LLStack
         }
         else
         {
-            newNode.next = top; //if stack isnt empty, next = top
+            newNode.next = top; //if stack isnt empty, next = top. 
         }
         top = newNode; //however, as stack pushes to the top, top is this node
                        //therefore, the next of the newNode is pointing to the previous node
