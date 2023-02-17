@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LLNode : Node
+public class LLNode
 {
     public Vector2 data;   //actual data in node in linked list
     public LLNode next; //pointer to the next node

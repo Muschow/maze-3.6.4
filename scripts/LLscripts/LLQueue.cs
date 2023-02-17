@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LLQueue : Node
+public class LLQueue
 {
     private LLNode front; //frontpointer of q
     private LLNode rear; //rearpointer of q
@@ -26,6 +26,8 @@ public class LLQueue : Node
             rear.next = newNode; //rear next points to newNode (same as incrementing rearpointer)
             rear = newNode; //add newNode to back of queue
         }
+
+        //GD.Print(valueToBeAdded + " enqueued to queue");
     }
 
     public Vector2 Dequeue()
@@ -43,13 +45,13 @@ public class LLQueue : Node
             return returnedV; //return dequeued value
         }
 
-
     }
 
     public Vector2 Peek()
     {
         if (!isEmpty())
         {
+            //GD.Print(front.data + "peeked");
             return front.data; //get value from top of queue
         }
         else
@@ -60,7 +62,7 @@ public class LLQueue : Node
 
     public bool isEmpty()
     {
-        if (rear == null) //if there is no node at the back then obviously its empty as a node gets added to the back
+        if (rear == null || front == null) //if there is no node at the back/front then its empty
             return true;
         else
             return false;

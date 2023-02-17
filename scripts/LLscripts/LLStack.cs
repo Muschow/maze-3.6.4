@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LLStack : Node
+public class LLStack
 {
     private LLNode top; //define the top pointer
 
@@ -25,7 +25,7 @@ public class LLStack : Node
         top = newNode; //however, as stack pushes to the top, top is this node
                        //therefore, the next of the newNode is pointing to the previous node
 
-        GD.Print(valueToBePushed + " pushed to stack"); //debug
+        //GD.Print(valueToBePushed + " pushed to stack"); //debug
     }
 
     public Vector2 Pop()
@@ -35,7 +35,7 @@ public class LLStack : Node
             throw new InvalidOperationException("Stack empty, cannot pop");
         }
 
-        GD.Print("popped " + top.data);
+        //GD.Print("popped " + top.data);
 
         Vector2 returnedV;
         returnedV = Peek();
@@ -50,7 +50,7 @@ public class LLStack : Node
     {
         if (!isEmpty())
         {
-            GD.Print("peeked:" + top.data);
+            //GD.Print("peeked:" + top.data);
             return top.data;
         }
         else
