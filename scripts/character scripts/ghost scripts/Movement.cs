@@ -124,7 +124,8 @@ public class Movement : Node
             return pathList;
         }
 
-        Queue<Vector2> bfsQ = new Queue<Vector2>(); //breadth first search uses a queue to search the nodes
+        //Queue<Vector2> bfsQ = new Queue<Vector2>(); //breadth first search uses a queue to search the nodes
+        LLQueue bfsQ = new LLQueue();
         bfsQ.Enqueue(source);
 
         List<Vector2> unvisited = new List<Vector2>();
@@ -137,7 +138,7 @@ public class Movement : Node
         Dictionary<Vector2, Vector2> previous = new Dictionary<Vector2, Vector2>(); //stores the previous nodes in the shortest path from the source
         //bfs is used for unweighted graph so the distances from start arent needed, just finds the shortest paths in terms of number of edges.
 
-        while (bfsQ.Count > 0) //while bfsQ is not empty
+        while (!bfsQ.isEmpty()) //while bfsQ is not empty
         {
             Vector2 currNode = bfsQ.Dequeue();
             int curIndex = nodeList.IndexOf(currNode);
