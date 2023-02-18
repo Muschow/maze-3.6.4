@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class LoginScript : Control
 {
-    private const string pepper = "VBU^(v9Vum#$/04a14V>wS(^0EfQRs6#o<"; //32 char
+    private const string PEPPER = "VBU^(v9Vum#$/04a14V>wS(^0EfQRs6#o<"; //32 char
     private LineEdit usernameInput;
     private LineEdit passwordInput;
     private Label notification;
@@ -53,7 +53,7 @@ public class LoginScript : Control
                 Godot.Collections.Array returnedSaltArray = (Godot.Collections.Array)database.Call("queryValue", saltQuery); //returns an object, must be cast to array
                 string userSalt = (string)returnedSaltArray[0];
 
-                string password = passwordInput.Text + userSalt + pepper;
+                string password = passwordInput.Text + userSalt + PEPPER;
                 password = password.SHA256Text();
 
                 string[] userParams = new string[] { usernameInput.Text, password };
@@ -90,7 +90,7 @@ public class LoginScript : Control
             else
             {
                 string newSalt = GenerateSalt(32);
-                string password = passwordInput.Text + newSalt + pepper;
+                string password = passwordInput.Text + newSalt + PEPPER;
                 password = password.SHA256Text(); //secures passwords so theyre not stored in plaintext in database
 
 
