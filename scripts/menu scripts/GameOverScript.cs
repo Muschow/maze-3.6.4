@@ -40,8 +40,8 @@ public class GameOverScript : Control
             }
             else
             {
-                int score = (int)returnedScoreValues[i];
-                scoreList.Add(Convert.ToString(score));
+                int score = (int)returnedScoreValues[i]; //whatever format godot has put it in doesnt let me convert to string straight away
+                scoreList.Add(Convert.ToString(score)); //for whatever reason converting to int and then string works however
             }
         }
 
