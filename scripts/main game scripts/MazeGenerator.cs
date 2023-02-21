@@ -25,7 +25,7 @@ public class MazeGenerator : TileMap
     LLStack IDFSstack = new LLStack();
 
     //-----------------------------------------------------Adjacency Matrix/List properties---------------------------------------------------------------
-    public List<Vector2> nodeList = new List<Vector2>(); //for nodes,maybe get rid of this to be honest
+    public List<Vector2> nodeList = new List<Vector2>();
     public LinkedList<Tuple<Vector2, int>>[] adjacencyList;
 
     //-------------------------------------------------------------GetNodes------------------------------------------------------------------------------

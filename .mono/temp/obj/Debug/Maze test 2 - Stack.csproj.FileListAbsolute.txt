@@ -43,3 +43,12 @@ C:\Users\mchow\Documents\GitHub\maze-3.6.4\.mono\temp\obj\Debug\Maze test 2 - St
 C:\Users\mchow\Documents\GitHub\maze-3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.csproj.CoreCompileInputs.cache
 C:\Users\mchow\Documents\GitHub\maze-3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.dll
 C:\Users\mchow\Documents\GitHub\maze-3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.pdb
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\bin\Debug\Maze test 2 - Stack.dll
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\bin\Debug\Maze test 2 - Stack.pdb
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.csproj.AssemblyReference.cache
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.AssemblyInfoInputs.cache
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.AssemblyInfo.cs
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.csproj.CoreCompileInputs.cache
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.dll
+C:\Users\mchow\OneDrive\Documents\GitHub\maze-3.6.5\maze 3.6.4\.mono\temp\obj\Debug\Maze test 2 - Stack.pdb

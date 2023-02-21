@@ -13,7 +13,7 @@ public class GameScript : Node2D
     private int upgradeLivesCost = 500;
 
 
-    //---------------'global' signals -------------
+    //---------------declare signals -------------
     [Signal] public delegate void PowerPelletActivated();
     [Signal] public delegate void DecoyPowerupActivated(Vector2 newPosition, int decoyLengthTime);
     [Signal] public delegate void RandomizerPowerupActivated();
@@ -63,7 +63,6 @@ public class GameScript : Node2D
 
         if (pacman.lives <= 0)
         {
-            pacman.lives = -1;
             GameOver();
         }
 
