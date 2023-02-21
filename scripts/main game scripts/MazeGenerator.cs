@@ -73,7 +73,7 @@ public class MazeGenerator : TileMap
     {
         Sprite pelletInstance = (Sprite)pelletScene.Instance();
         GetParent().GetNode<Node2D>("PelletContainer").AddChild(pelletInstance);
-        pelletInstance.Position = MapToWorld(spawnPosition) + new Vector2(16, 16);
+        pelletInstance.Position = MapToWorld(spawnPosition) + halfCellSize; //CHANGED THIS MAKE SURE TO TEST IT!!!!
     }
 
     private void AddRandomPowerups() //adds powerups to random paths on maze by getting random child of powerupFactory and duplicating it
