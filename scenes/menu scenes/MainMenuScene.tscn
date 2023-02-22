@@ -83,9 +83,9 @@ text = "HOW TO PLAY:
 
 GHOST TARGETS:
 -Red ghost targets you
--Pink ghost targets closest node to you
+-Pink ghost targets closest junction to you
 -Blue ghost moves randomly
--Orange ghost targets between 2 other ghosts
+-Orange ghost targets the middle of you and another ghost
 "
 align = 1
 
