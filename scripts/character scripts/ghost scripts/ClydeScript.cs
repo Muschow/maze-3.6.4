@@ -9,11 +9,9 @@ public class ClydeScript : GhostScript
         searchingAlgo = algo.astar;
     }
 
-    private KinematicBody2D firstGhost;
-
     public override void UpdateTarget()
     {
-        firstGhost = GetParent().GetChildOrNull<KinematicBody2D>(0);
+        KinematicBody2D firstGhost = GetParent().GetChildOrNull<KinematicBody2D>(0);
         if (firstGhost == null)
         {
             patrolTimer.Paused = true;

@@ -51,12 +51,10 @@ public class GhostScript : CharacterScript
     protected Timer chaseTimer;
     protected Timer patrolTimer;
     protected Timer vulnerableTimer;
-    protected Timer resetChasePathTimer;
 
     //------------------------other scenes--------------------------------
     protected PacmanScript pacman;
     private TileMap nodeTilemap;
-    private Globals globals;
     private GameScript game;
 
     //----------------------------------------------------Ready and Process----------------------------------------------------------------------------
@@ -112,11 +110,9 @@ public class GhostScript : CharacterScript
         mazeTm = GetParent().GetParent().GetNode<MazeGenerator>("MazeTilemap");
         nodeTilemap = GetParent().GetParent().GetNode<TileMap>("NodeTilemap");
         pacman = GetNode<PacmanScript>("/root/Game/Pacman");
-        globals = GetNode<Globals>("/root/Globals");
         game = GetNode<GameScript>("/root/Game");
 
         //Timers--------------
-        resetChasePathTimer = GetNode<Timer>("ResetChasePath");
         chaseTimer = GetNode<Timer>("ChaseTimer");
         patrolTimer = GetNode<Timer>("PatrolTimer");
         vulnerableTimer = GetNode<Timer>("VulnerableTimer");

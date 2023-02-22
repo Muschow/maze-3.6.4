@@ -118,7 +118,7 @@ public class PacmanScript : CharacterScript
     //except in godot +y goes downwards so thats why its less than
     private void UpdateTravelDistance()
     {
-        if ((int)((Position / 32).y) < (int)((oldPos / 32).y))
+        if ((int)((Position / MazeGenerator.CELLSIZE).y) < (int)((oldPos / MazeGenerator.CELLSIZE).y))
         {
             oldPos = Position;
             game.travelDist++;

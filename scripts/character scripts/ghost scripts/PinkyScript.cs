@@ -13,7 +13,7 @@ public class PinkyScript : GhostScript
     public override void UpdateTarget()
     {
         Vector2 currTarget = mazeTm.WorldToMap(pacman.Position);
-        if (IsOnNode(mazeTm.WorldToMap(pacman.Position))) //only update pacman positon when passed node
+        if (IsOnNode(currTarget)) //only update pacman positon when passed node mazeTm.WorldToMap(pacman.Position)
         {
             target = currTarget; //pinky travels to players last seen node
         }
