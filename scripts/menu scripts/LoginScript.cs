@@ -52,6 +52,7 @@ public class LoginScript : Control
 
                 Godot.Collections.Array returnedSaltArray = (Godot.Collections.Array)database.Call("queryValue", saltQuery); //returns an object, must be cast to array
                 string userSalt = (string)returnedSaltArray[0];
+                GD.Print("userSalt from db: " + userSalt); //testing
 
                 string password = passwordInput.Text + userSalt + PEPPER;
                 password = password.SHA256Text();
@@ -66,7 +67,7 @@ public class LoginScript : Control
                 else
                 {
                     var idQuery = database.Call("queryDBwithParameters", "SELECT ID FROM PlayerInfo WHERE Username = ? AND Password = ?;", userParams);
-
+                    GD.Print("user hashed password: " + password); //testing
                     Godot.Collections.Array returnedIdArray = (Godot.Collections.Array)database.Call("queryValue", idQuery);
                     global.userId = (int)returnedIdArray[0];
 
@@ -92,7 +93,7 @@ public class LoginScript : Control
                 string newSalt = GenerateSalt(32);
                 string password = passwordInput.Text + newSalt + PEPPER;
                 password = password.SHA256Text(); //secures passwords so theyre not stored in plaintext in database
-
+                GD.Print("salt+pepper+hashed password: " + password);
 
                 string[] newRecordParam = new string[] { usernameInput.Text, password, newSalt };
                 database.Call("queryDBwithParameters", "INSERT INTO PlayerInfo (Username, Password, Salt) VALUES (?, ?, ?);", newRecordParam);
@@ -163,7 +164,7 @@ public class LoginScript : Control
 
         }
 
-        //GD.Print("salt: ", salt); //debug
+        GD.Print("generated salt: ", salt); //testing
         return salt;
     }
 

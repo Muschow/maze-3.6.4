@@ -227,7 +227,7 @@ public class MazeGenerator : TileMap
     private void IterativeDFSInit()
     {
         generationComplete = false;
-
+        GD.Print("IDFSInit called, maze generating...");
 
         CreateStartingGrid();
 

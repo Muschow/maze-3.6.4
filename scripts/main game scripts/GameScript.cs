@@ -34,10 +34,7 @@ public class GameScript : Node2D
     private Globals global;
     PelletScript pellet = new PelletScript();
     PackedScene mazeScene = GD.Load<PackedScene>("res://scenes/main game scenes/Maze.tscn");
-    public override void _EnterTree()
-    {
-        gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
-    }
+
     public override void _Ready()
     {
         GD.Print("Game ready"); //debug
@@ -58,6 +55,7 @@ public class GameScript : Node2D
         {
             GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
             InstanceAndRemoveMazes();
+            GD.Print("gameSpeed" + gameSpeed); //testing
         }
         UpdateLabels();
 
@@ -154,6 +152,7 @@ public class GameScript : Node2D
     {
         score = 0 - pellet.baseScore; //as pacman spawns on a pellet, remove 1 instance of pellet score
         gameSpeed = 1;
+        gameSpeed -= gameSpeedInc; //as the game spawns 2 mazes at the start, i decided to - initial gamespeedinc so that we start at 1x gamespeed
         global.gameWon = false;
     }
 }

@@ -63,7 +63,8 @@ public class GhostScript : CharacterScript
     public override void _Ready()
     {
         //GD.Print("ghostscript ready"); //debug
-
+        GD.Print("ghostcolour: " + ghostColour + " new searching algo: " + searchingAlgo); //testing, godot stores a colour as 4 values from 0-1. Theres no function to turn these back into the colour constants for some reason
+        GD.Print("ghostcolour: " + ghostColour + " baseSpeed: " + baseSpeed);
         GetNodes();
 
         moveScr.adjList = mazeTm.adjacencyList; //make sure movement has the adjacency list and nodelist of the maze the ghost is on
@@ -384,6 +385,7 @@ public class GhostScript : CharacterScript
         Random rnd = new Random();
         int algoLength = Enum.GetNames(typeof(algo)).Length;
         searchingAlgo = (algo)rnd.Next(0, algoLength);
+        GD.Print("ghostcolour: " + ghostColour + " new searching algo :" + searchingAlgo); //godot stores a colour as 4 values from 0-1. Theres no function to turn these back into the colour constants for some reason
     }
 
     private void _OnChangeSpeedModifierActivated(float newSpeedModifier) //allows me to change speed via a signal
