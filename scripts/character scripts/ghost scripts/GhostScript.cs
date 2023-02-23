@@ -64,7 +64,7 @@ public class GhostScript : CharacterScript
     {
         //GD.Print("ghostscript ready"); //debug
         GD.Print("ghostcolour: " + ghostColour + " new searching algo: " + searchingAlgo); //testing, godot stores a colour as 4 values from 0-1. Theres no function to turn these back into the colour constants for some reason
-        GD.Print("ghostcolour: " + ghostColour + " baseSpeed: " + baseSpeed);
+        GD.Print("ghostcolour: " + ghostColour + " baseSpeed: " + baseSpeed); //testing
         GetNodes();
 
         moveScr.adjList = mazeTm.adjacencyList; //make sure movement has the adjacency list and nodelist of the maze the ghost is on
