@@ -47,6 +47,8 @@ public class MazeGenerator : TileMap
     public override void _Ready()
     {
         //GD.Print("mazegen ready"); //debug
+        //IDFSstack.Pop(); //testing
+        //IDFSstack.Pop(); //testing
 
         GD.Randomize();
         GetNodes();

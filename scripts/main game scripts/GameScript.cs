@@ -39,7 +39,6 @@ public class GameScript : Node2D
     {
         GD.Print("Game ready"); //debug
 
-
         GetNodes();
         StartNewGame();
         mazesOnTheScreen++; //remove this if you instance the first maze

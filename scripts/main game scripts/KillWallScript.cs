@@ -11,6 +11,7 @@ public class KillWallScript : Sprite
     public override void _Ready()
     {
         GetNodes();
+        GD.Print("killwall basespeed" + speed);
         Scale = new Vector2(maze.width + 1, 1); //the killwall is just a bit larger than the width of maze
         Position = new Vector2((maze.width / 2), (maze.mazeOriginY + maze.height + 10)) * MazeGenerator.CELLSIZE; //centers killwall
     }

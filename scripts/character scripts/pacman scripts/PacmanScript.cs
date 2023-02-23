@@ -10,6 +10,7 @@ public class PacmanScript : CharacterScript
     [Export] public int lives = 3;
     [Export] public int maxLives = 3;
 
+    private Vector2 oldPos;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -20,6 +21,7 @@ public class PacmanScript : CharacterScript
 
         //spawns pacman on bottom left of maze. * celllsize to convert from map to world, + halfCellSize so spawns in centre of tile
         Position = new Vector2(1, mazeTm.mazeOriginY + mazeTm.height - 2) * MazeGenerator.CELLSIZE + MazeGenerator.halfCellSize;
+        oldPos = Position;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -112,7 +114,7 @@ public class PacmanScript : CharacterScript
     }
 
 
-    private Vector2 oldPos = new Vector2(Globals.INFINITY, Globals.INFINITY);
+
 
     //if new pos is higher than old pos increase distance... 
     //except in godot +y goes downwards so thats why its less than

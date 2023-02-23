@@ -124,9 +124,13 @@ public class Movement
             return pathList;
         }
 
-        //Queue<Vector2> bfsQ = new Queue<Vector2>(); //breadth first search uses a queue to search the nodes
+        //breadth first search uses a queue to search the nodes
         LLQueue LLq = new LLQueue();
         LLq.Enqueue(source);
+
+        //LLq.Dequeue(); //testing    
+        //LLq.Dequeue(); //testing
+
 
         List<Vector2> unvisited = new List<Vector2>();
         foreach (Vector2 node in nodeList)
