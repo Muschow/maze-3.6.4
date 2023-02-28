@@ -54,7 +54,7 @@ public class GameScript : Node2D
         {
             GameScript.gameSpeed += gameSpeedInc; //max speed that i want is 400, 512 dist = 14 and a bit mazes, 400/14 mazes = 28.57 increase per maze
             InstanceAndRemoveMazes();
-            GD.Print("gameSpeed" + gameSpeed); //testing
+            //GD.Print("gameSpeed" + gameSpeed); //testing
         }
         UpdateLabels();
 
