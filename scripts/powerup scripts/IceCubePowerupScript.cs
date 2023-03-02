@@ -17,7 +17,6 @@ public class IceCubePowerupScript : ItemPickupScript
 
         GetNode<CollisionShape2D>("ItemArea/CollisionShape2D").SetDeferred("Disabled", true);
         GetNode<Timer>("PowerupTimer").Start(icecubeWaitTime);
-        //EmitSignal change speedModifier
         game.EmitSignal("ChangeSpeedModifier", newSpeedModifier);
 
     }
@@ -25,7 +24,6 @@ public class IceCubePowerupScript : ItemPickupScript
     private void _OnPowerupTimerTimeout()    //on timer timeout, reset everything and delete powerup
     {
         //GD.Print("onpoweruptimertimeout"); //debug
-        //EmitSignal change speedModifier back
         newSpeedModifier = 1;
         game.EmitSignal("ChangeSpeedModifier", newSpeedModifier);
         QueueFree(); //delete the icecube when the duration has been reached
